@@ -38,4 +38,20 @@ class AppColors {
   static const Color whiteFaint = Color(0x12FFFFFF); // white @ 7%
   static const Color whiteMuted = Color(0x8AFFFFFF); // white @ 54%
   static const Color hairline = Color(0x1FFFFFFF);
+
+  // --- Dark "Bento" surfaces (customer dashboard) -------------------------
+  // Navy is the canvas here, so department accents must come from the bright
+  // end of the palette; navy itself would disappear against the background.
+  static const Color canvas = Color(0xFF071E3D);
+  static const Color canvasDeep = Color(0xFF041123);
+  static const Color surface = Color(0xFF0F2E52);
+  static const Color surfaceRaised = Color(0xFF143A66);
+  static const Color hairlineDark = Color(0x1AFFFFFF); // white @ 10%
+  static const Color inkOnDark = Color(0xFFF2F6FC);
+  static const Color inkMutedOnDark = Color(0xFFAFC3DC);
+
+  // Glass navigation
+  static const Color glassFill = Color(0xB80B2D5B); // navy @ 72%
+  static const Color glassFillDeep = Color(0xE6071E3D); // navy @ 90%
+  static const Color glassEdge = Color(0x24FFFFFF);
 }

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supreme Mall — UI style options</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1000px 500px at 20% -10%,#12365f 0%,rgba(18,54,95,0) 60%),#eef2f8;
+    padding:30px 18px 50px; color:#0B2D5B;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  .head{text-align:center;margin-bottom:26px;}
+  .head h1{font-size:24px;letter-spacing:-.4px;color:#fff;}
+  .head p{color:#b9cbe4;font-size:13px;margin-top:8px;line-height:1.6;}
+  .rec{
+    max-width:900px;margin:0 auto 30px;background:#fff;border:1px solid #E3E9F2;
+    border-radius:18px;padding:18px 20px;box-shadow:0 10px 30px rgba(11,45,91,.08);
+  }
+  .rec strong{display:block;font-size:12px;letter-spacing:1.4px;color:#9A7208;margin-bottom:8px;}
+  .rec p{font-size:13.5px;line-height:1.65;color:#4B5563;}
+  .rec p + p{margin-top:8px;}
+  .row{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;align-items:flex-start;}
+  .frame{width:330px;max-width:100%;}
+  .bezel{
+    background:#0B2D5B;border-radius:38px;padding:9px;
+    box-shadow:0 22px 50px rgba(7,30,61,.28);
+  }
+  .screen{height:600px;border-radius:30px;overflow:hidden;position:relative;}
+  .cap{margin-top:14px;}
+  .cap h3{font-size:15px;font-weight:800;letter-spacing:-.2px;}
+  .cap .tag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:1px;
+    padding:3px 7px;border-radius:100px;background:#fff;border:1px solid #E3E9F2;
+    color:#4B5563;margin-top:6px;}
+  .cap ul{margin-top:9px;padding-left:15px;}
+  .cap li{font-size:11.5px;line-height:1.55;color:#4B5563;margin-bottom:3px;}
+  .best{background:#27AE60;color:#fff;border-color:#27AE60;}
+
+  /* ---------- shared bits ---------- */
+  .pad{padding:0 14px;}
+  .loc{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;}
+  .srch{display:flex;align-items:center;gap:7px;font-size:10.5px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .tile{border-radius:15px;padding:11px;display:flex;flex-direction:column;gap:6px;}
+  .tile .ico{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-size:13px;}
+  .tile b{font-size:11px;font-weight:700;letter-spacing:-.1px;}
+  .tile span{font-size:8.5px;opacity:.75;}
+  .nav{position:absolute;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;
+    justify-content:space-around;font-size:8.5px;font-weight:600;}
+  .nav i{display:block;width:14px;height:14px;border-radius:4px;margin:0 auto 3px;opacity:.9;}
+
+  /* ---------- A · Civic Trust ---------- */
+  .v-a{background:#F8FAFC;}
+  .v-a .top{background:#0B2D5B;padding:16px 14px 18px;color:#fff;}
+  .v-a .brand{font-size:10px;font-weight:800;letter-spacing:1.8px;margin-bottom:12px;}
+  .v-a .loc{color:#fff;}
+  .v-a .srch{margin-top:11px;background:#fff;border-radius:10px;padding:9px 11px;color:#8A97A8;}
+  .v-a h4{font-size:12.5px;font-weight:800;margin:14px 0 9px;letter-spacing:-.2px;}
+  .v-a .tile{background:#fff;border:1px solid #E3E9F2;border-radius:11px;}
+  .v-a .tile .ico{background:#EEF3FA;color:#0B2D5B;}
+  .v-a .tile b{color:#0B2D5B;}
+  .v-a .order{margin-top:11px;background:#fff;border:1px solid #E3E9F2;border-left:3px solid #D4A017;
+    border-radius:10px;padding:10px;}
+  .v-a .order b{font-size:10.5px;}
+  .v-a .order p{font-size:9px;color:#8A97A8;margin-top:3px;}
+  .v-a .nav{background:#fff;border-top:1px solid #E3E9F2;color:#8A97A8;}
+  .v-a .nav i{background:#C8D3E3;}
+  .v-a .nav .on{color:#0B2D5B;}
+  .v-a .nav .on i{background:#0B2D5B;}
+
+  /* ---------- B · Warm Marketplace ---------- */
+  .v-b{background:#FDFBF7;}
+  .v-b .top{padding:16px 14px 0;}
+  .v-b .top .rowtop{display:flex;align-items:center;justify-content:space-between;}
+  .v-b .brand{font-size:10px;font-weight:800;letter-spacing:1.8px;color:#0B2D5B;}
+  .v-b .loc{color:#4B5563;}
+  .v-b .srch{margin-top:12px;background:#fff;border-radius:16px;padding:11px 13px;color:#8A97A8;
+    box-shadow:0 6px 16px rgba(11,45,91,.07);}
+  .v-b h4{font-size:13px;font-weight:800;margin:15px 0 9px;}
+  .v-b .hero{margin:12px 14px 0;border-radius:20px;padding:14px;color:#0B2D5B;
+    background:linear-gradient(135deg,#FBEFD2,#F6E2B4);}
+  .v-b .hero b{font-size:14px;letter-spacing:-.2px;display:block;line-height:1.25;}
+  .v-b .hero p{font-size:9.5px;margin-top:4px;color:#7a6320;}
+  .v-b .hero .cta{margin-top:9px;display:inline-block;background:#D4A017;color:#0B2D5B;
+    font-size:9.5px;font-weight:800;padding:6px 11px;border-radius:100px;}
+  .v-b .tile{background:#fff;border-radius:18px;border:1px solid #F0E9DC;
+    box-shadow:0 8px 20px rgba(122,99,32,.07);}
+  .v-b .thumb{height:42px;border-radius:12px;margin-bottom:2px;
+    background:linear-gradient(135deg,#E9F3EA,#D9EBDC);}
+  .v-b .tile:nth-child(2) .thumb{background:linear-gradient(135deg,#FDF0DC,#F8DFB8);}
+  .v-b .wide{grid-column:1 / -1;background:#fff;border:1px solid #F0E9DC;border-radius:18px;
+    padding:10px;display:flex;gap:9px;align-items:center;}
+  .v-b .wide .thumb{width:40px;height:40px;margin:0;background:linear-gradient(135deg,#E6F1FB,#CFE5F7);}
+  .v-b .nav{background:#fff;color:#9A9384;border-top:1px solid #F0E9DC;}
+  .v-b .nav i{background:#DDD5C6;}
+  .v-b .nav .on{color:#0B2D5B;}
+  .v-b .nav .on i{background:#0B2D5B;}
+
+  /* ---------- C · Dark Bento ---------- */
+  .v-c{background:linear-gradient(180deg,#071E3D 0%,#0B2D5B 55%,#123A6B 100%);color:#fff;}
+  .v-c .top{padding:16px 14px 0;}
+  .v-c .rowtop{display:flex;align-items:center;justify-content:space-between;}
+  .v-c .brand{font-size:10px;font-weight:800;letter-spacing:1.8px;}
+  .v-c .loc{color:#C9D8EC;}
+  .v-c .srch{margin-top:12px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);
+    border-radius:14px;padding:10px 12px;color:#AFC3DC;}
+  .v-c h4{font-size:12px;font-weight:800;margin:15px 0 9px;color:#fff;}
+  .v-c h4 em{color:#D4A017;font-style:normal;}
+  .v-c .tile{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);}
+  .v-c .tile .ico{background:rgba(255,255,255,.14);}
+  .v-c .tile b{color:#fff;}
+  .v-c .tile span{color:#AFC3DC;}
+  .v-c .big{grid-column:1 / -1;flex-direction:row;align-items:center;gap:10px;
+    background:linear-gradient(135deg,rgba(39,174,96,.28),rgba(39,174,96,.10));
+    border-color:rgba(39,174,96,.35);}
+  .v-c .big .grow{flex:1;}
+  .v-c .big .pill{font-size:8px;font-weight:800;letter-spacing:.6px;background:#27AE60;color:#06281a;
+    padding:3px 7px;border-radius:100px;}
+  .v-c .order{margin-top:10px;border-radius:14px;padding:10px;background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);display:flex;gap:9px;align-items:center;}
+  .v-c .order .dot{width:7px;height:7px;border-radius:50%;background:#D4A017;flex:0 0 auto;}
+  .v-c .order b{font-size:10.5px;}
+  .v-c .order p{font-size:8.5px;color:#AFC3DC;margin-top:2px;}
+  .v-c .nav{background:rgba(4,17,35,.72);border-top:1px solid rgba(255,255,255,.10);color:#8FA7C4;}
+  .v-c .nav i{background:#5B7BA3;}
+  .v-c .nav .on{color:#D4A017;}
+  .v-c .nav .on i{background:#D4A017;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>Three UI directions for Supreme Mall</h1>
+    <p>Same content, same brand palette — different personality. Pick one and I'll build the customer home screen in it.</p>
+  </div>
+
+  <div class="rec">
+    <strong>MY RECOMMENDATION</strong>
+    <p><b>Hybrid of A + C — "brand chrome, light content".</b> Navy is the app's identity (header, bottom nav, hero); the working surface stays ivory because sunlight readability and cheap Android screens punish large dark areas, and a mostly-light UI renders faster on 2G/3G.</p>
+    <p>Then borrow C's <b>bento grid</b> for the service tiles — one large "Order again" tile, three medium Phase 1 tiles (Shopping, Food, Fresh), four small "soon" tiles — so seven departments fit on one screen without a cluttered 7-up grid.</p>
+  </div>
+
+  <div class="row">
+
+    <!-- A -->
+    <div class="frame">
+      <div class="bezel"><div class="screen v-a">
+        <div class="top">
+          <div class="brand">SUPREME MALL</div>
+          <div class="loc">&#9679; Nyeri Town &nbsp;&#9662;</div>
+          <div class="srch">&#9906; Search shops, food, produce&hellip;</div>
+        </div>
+        <div class="pad">
+          <h4>Services</h4>
+          <div class="grid2">
+            <div class="tile"><div class="ico">&#128717;</div><b>Shopping</b><span>Supermarkets</span></div>
+            <div class="tile"><div class="ico">&#127860;</div><b>Food</b><span>Restaurants</span></div>
+            <div class="tile"><div class="ico">&#127807;</div><b>Fresh</b><span>Farm produce</span></div>
+            <div class="tile"><div class="ico">&#128274;</div><b>Rides</b><span>Coming soon</span></div>
+          </div>
+          <div class="order">
+            <b>Order #SM-1042 &middot; On the way</b>
+            <p>Nyeri Fresh Mart &middot; 12 min away</p>
+          </div>
+          <div class="order" style="border-left-color:#0B2D5B">
+            <b>Payment confirmed</b>
+            <p>M-Pesa &middot; KSh 1,240</p>
+          </div>
+        </div>
+        <div class="nav"><span class="on"><i></i>Home</span><span><i></i>Orders</span><span><i></i>Cart</span><span><i></i>Account</span></div>
+      </div></div>
+      <div class="cap">
+        <h3>A &middot; Civic Trust</h3>
+        <div class="tag">Flat &middot; structured &middot; bank-like</div>
+        <ul>
+          <li>Hairline borders, no shadows, tight 11px radii</li>
+          <li>Gold used only as a 3px status rule</li>
+          <li>Reads as reliable and official — good for a new brand handling M-Pesa money</li>
+          <li>Risk: can feel plain next to Grab/Glovo</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="frame">
+      <div class="bezel"><div class="screen v-b">
+        <div class="top">
+          <div class="rowtop">
+            <div class="brand">SUPREME MALL</div>
+            <div class="loc">Nyeri Town &#9662;</div>
+          </div>
+          <div class="srch">&#9906; What are you craving today?</div>
+        </div>
+        <div class="hero">
+          <b>Fresh from Karatina market</b>
+          <p>Farm produce delivered the same day</p>
+          <span class="cta">Shop Fresh &rarr;</span>
+        </div>
+        <div class="pad">
+          <h4>Browse</h4>
+          <div class="grid2">
+            <div class="tile"><div class="thumb"></div><b>Shopping</b><span>Supermarkets</span></div>
+            <div class="tile"><div class="thumb"></div><b>Food</b><span>Restaurants</span></div>
+          </div>
+          <div class="wide" style="margin-top:9px">
+            <div class="thumb"></div>
+            <div><b style="font-size:11px">Fresh</b><br><span style="font-size:8.5px;color:#8A97A8">Fruit, veg &amp; cereals</span></div>
+          </div>
+        </div>
+        <div class="nav"><span class="on"><i></i>Home</span><span><i></i>Orders</span><span><i></i>Cart</span><span><i></i>Account</span></div>
+      </div></div>
+      <div class="cap">
+        <h3>B &middot; Warm Marketplace</h3>
+        <div class="tag">Editorial &middot; photographic &middot; appetising</div>
+        <ul>
+          <li>Cream background, 18&ndash;20px radii, soft warm shadows</li>
+          <li>Gold as the hero CTA; big promo card per department</li>
+          <li>Strongest for Food/Fresh — sells the produce</li>
+          <li>Risk: image-led = heavy on data; weak for Rides/Errands</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="frame">
+      <div class="bezel"><div class="screen v-c">
+        <div class="top">
+          <div class="rowtop">
+            <div class="brand">SUPREME MALL</div>
+            <div class="loc">Nyeri Town &#9662;</div>
+          </div>
+          <div class="srch">&#9906; Search services</div>
+        </div>
+        <div class="pad">
+          <h4>Good evening &middot; <em>what do you need?</em></h4>
+          <div class="grid2">
+            <div class="tile big">
+              <div class="ico">&#128717;</div>
+              <div class="grow"><b>Shopping</b><br><span>12 stores near you</span></div>
+              <div class="pill">LIVE</div>
+            </div>
+            <div class="tile"><div class="ico">&#127860;</div><b>Food</b><span>18 kitchens</span></div>
+            <div class="tile"><div class="ico">&#127807;</div><b>Fresh</b><span>Market day</span></div>
+            <div class="tile"><div class="ico">&#128663;</div><b>Rides</b><span>Coming soon</span></div>
+            <div class="tile"><div class="ico">&#128757;</div><b>Boda</b><span>Coming soon</span></div>
+            <div class="tile"><div class="ico">&#128203;</div><b>Errands</b><span>Coming soon</span></div>
+            <div class="tile"><div class="ico">&#128295;</div><b>Home</b><span>Coming soon</span></div>
+          </div>
+          <div class="order">
+            <span class="dot"></span>
+            <div><b>Order #SM-1042 &middot; On the way</b><p>Rider Brian &middot; 12 min away</p></div>
+          </div>
+        </div>
+        <div class="nav"><span class="on"><i></i>Home</span><span><i></i>Orders</span><span><i></i>Cart</span><span><i></i>Account</span></div>
+      </div></div>
+      <div class="cap">
+        <h3>C &middot; Dark Bento <span class="tag best">most modern</span></h3>
+        <div class="tag">Bento grid &middot; glass &middot; super-app</div>
+        <ul>
+          <li>Bento tiles: 1 hero + 3 medium + 4 small = all 7 departments visible</li>
+          <li>Glass surfaces, gold live-accents, floating nav</li>
+          <li>Matches the app-plus-website-brief look of Grab / Gojek / 2026 trends</li>
+          <li>Risk: dark theme by default is hard in sunlight; revisit contrast</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

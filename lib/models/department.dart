@@ -37,7 +37,7 @@ const List<SupremeDepartment> supremeDepartments = <SupremeDepartment>[
     name: 'Supreme Shopping',
     tagline: 'Supermarkets & retail',
     icon: Icons.storefront_outlined,
-    accent: AppColors.navy,
+    accent: AppColors.sky,
     openForApplications: true,
   ),
   SupremeDepartment(
@@ -69,7 +69,7 @@ const List<SupremeDepartment> supremeDepartments = <SupremeDepartment>[
     name: 'Supreme Boda',
     tagline: 'Rider transport & parcels',
     icon: Icons.two_wheeler_outlined,
-    accent: AppColors.navy,
+    accent: AppColors.sky,
     openForApplications: false,
   ),
   SupremeDepartment(
