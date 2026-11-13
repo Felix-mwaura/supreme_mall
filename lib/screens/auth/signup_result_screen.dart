@@ -5,6 +5,7 @@ import '../../services/account_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text.dart';
 import '../../widgets/app_button.dart';
+import '../home/customer_home_screen.dart';
 
 class ResultStep {
   const ResultStep({required this.label, this.detail, this.done = false});
@@ -26,6 +27,7 @@ class SignupResultScreen extends StatelessWidget {
     required this.message,
     required this.steps,
     this.reference,
+    this.nextScreen,
   });
 
   factory SignupResultScreen.customer({
@@ -39,6 +41,7 @@ class SignupResultScreen extends StatelessWidget {
           'Your account is ready. Add a delivery location and you can start '
           'ordering from Supreme Shopping, Supreme Food and Supreme Fresh.',
       reference: reference,
+      nextScreen: const CustomerHomeScreen(),
       steps: const <ResultStep>[
         ResultStep(label: 'Account created', done: true),
         ResultStep(label: 'Save your delivery location', detail: 'Nyeri Town and surrounding areas'),
@@ -78,6 +81,10 @@ class SignupResultScreen extends StatelessWidget {
   final String message;
   final List<ResultStep> steps;
   final String? reference;
+
+  /// When set, the primary action continues into this screen instead of
+  /// returning to the app entry point.
+  final Widget? nextScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -165,10 +172,17 @@ class SignupResultScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 AppButton(
-                  label: 'Back to Supreme Mall',
-                  onPressed: () => Navigator.of(context).popUntil(
-                    (Route<dynamic> route) => route.isFirst,
-                  ),
+                  label: nextScreen == null ? 'Back to Supreme Mall' : 'Start shopping',
+                  icon: Icons.arrow_forward,
+                  onPressed: () {
+                    if (nextScreen == null) {
+                      Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+                      return;
+                    }
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute<void>(builder: (BuildContext _) => nextScreen!),
+                    );
+                  },
                 ),
               ],
             ),

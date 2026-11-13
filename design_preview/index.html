@@ -206,6 +206,86 @@
   .note span.shield{color:var(--emerald); display:flex;}
   .assurance span.fold{color:var(--navy); display:flex;}
   .chip .ico{width:12px; height:12px; margin-left:5px;}
+
+  /* ---------- dashboard (Bento, dark) ---------- */
+  .dash{position:relative; height:100%; background:linear-gradient(180deg,#041123 0%,#071E3D 40%,#0B2D5B 78%,#123A6B 100%);}
+  .dash-scroll{position:absolute; inset:0; overflow-y:auto; padding:16px 14px 96px; scrollbar-width:none;}
+  .dash-scroll::-webkit-scrollbar{display:none;}
+  .d-top{display:flex;align-items:center;gap:8px;}
+  .d-pill{display:flex;align-items:center;gap:6px;background:#0F2E52;border:1px solid rgba(255,255,255,.10);
+    border-radius:100px;padding:8px 11px;font-size:11px;color:#F2F6FC;font-weight:600;}
+  .d-pill .ico{width:13px;height:13px;color:#3498DB;}
+  .d-bell{margin-left:auto;width:36px;height:36px;border-radius:50%;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);display:grid;place-items:center;color:#F2F6FC;position:relative;}
+  .d-bell::after{content:"";position:absolute;top:8px;right:9px;width:6px;height:6px;border-radius:50%;background:#D4A017;}
+  .d-bell .ico{width:17px;height:17px;}
+  .d-greet{margin-top:18px;font-size:11px;color:#AFC3DC;font-weight:500;}
+  .d-h1{font-size:22px;line-height:1.2;font-weight:800;color:#F2F6FC;margin-top:4px;letter-spacing:-.5px;}
+  .d-h1 em{color:#D4A017;font-style:normal;}
+  .d-search{margin-top:14px;height:46px;border-radius:14px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;gap:9px;padding:0 13px;
+    color:#AFC3DC;font-size:11.5px;}
+  .d-search .ico{width:16px;height:16px;}
+  .d-sec{display:flex;align-items:center;justify-content:space-between;margin:20px 0 9px;
+    font-size:9px;letter-spacing:1.3px;font-weight:700;color:#AFC3DC;}
+  .d-sec span:last-child{color:#D4A017;letter-spacing:0;font-size:9.5px;}
+  .bento{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .bt{background:#0F2E52;border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:11px;
+    display:flex;flex-direction:column;gap:0;min-height:86px;}
+  .bt.hero{grid-column:1/-1;flex-direction:row;align-items:center;gap:11px;min-height:78px;}
+  .bt .chip{width:30px;height:30px;border-radius:10px;background:#143A66;
+    border:1px solid rgba(255,255,255,.14);display:grid;place-items:center;flex:0 0 auto;color:#AFC3DC;}
+  .bt .chip .ico{width:15px;height:15px;}
+  .bt b{font-size:11.5px;color:#F2F6FC;font-weight:700;}
+  .bt small{font-size:8.5px;color:#AFC3DC;line-height:1.3;}
+  .bt .sp{flex:1;}
+  .bt .row{display:flex;align-items:center;gap:6px;}
+  .bt.live-sky{border-color:rgba(52,152,219,.38);background:linear-gradient(135deg,rgba(52,152,219,.22),#0F2E52);}
+  .bt.live-gold{border-color:rgba(212,160,23,.38);background:linear-gradient(135deg,rgba(212,160,23,.22),#0F2E52);}
+  .bt.live-em{border-color:rgba(39,174,96,.38);background:linear-gradient(135deg,rgba(39,174,96,.22),#0F2E52);}
+  .bt.live-sky .chip{color:#3498DB;} .bt.live-gold .chip{color:#D4A017;} .bt.live-em .chip{color:#27AE60;}
+  .bt .arrow{width:15px;height:15px;color:#3498DB;}
+  .soon-badge{font-size:6.5px;font-weight:800;letter-spacing:.7px;background:#143A66;
+    color:#AFC3DC;border-radius:100px;padding:2px 5px;margin-left:auto;}
+  .d-order{margin-top:18px;background:#0F2E52;border:1px solid rgba(255,255,255,.10);
+    border-radius:16px;padding:12px;display:flex;align-items:center;gap:10px;}
+  .d-order .dot{width:7px;height:7px;border-radius:50%;background:#D4A017;flex:0 0 auto;}
+  .d-order b{font-size:10.5px;color:#F2F6FC;display:block;}
+  .d-order small{font-size:8.8px;color:#AFC3DC;display:block;margin-top:2px;}
+  .d-order .track{margin-left:auto;font-size:9px;font-weight:800;color:#D4A017;
+    background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.30);border-radius:100px;padding:5px 9px;}
+  .near{display:flex;gap:9px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+  .near::-webkit-scrollbar{display:none;}
+  .mcard{flex:0 0 134px;background:#0F2E52;border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;padding:10px;}
+  .mcard .top{display:flex;align-items:center;justify-content:space-between;}
+  .mcard .chip{width:24px;height:24px;border-radius:8px;background:#143A66;display:grid;place-items:center;}
+  .mcard .chip .ico{width:13px;height:13px;}
+  .mcard .rate{display:flex;align-items:center;gap:2px;font-size:8.5px;color:#F2F6FC;}
+  .mcard .rate .ico{width:10px;height:10px;color:#D4A017;}
+  .mcard b{font-size:10.5px;color:#F2F6FC;display:block;margin-top:8px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .mcard .dept{font-size:8.3px;font-weight:700;}
+  .mcard small{font-size:8.2px;color:#AFC3DC;display:block;margin-top:1px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+
+  /* frosted glass navigation */
+  .gnav{position:absolute;left:14px;right:14px;bottom:12px;height:60px;border-radius:20px;
+    background:linear-gradient(180deg,rgba(11,45,91,.72),rgba(7,30,61,.92));
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 14px 30px rgba(0,0,0,.45);
+    display:flex;align-items:center;}
+  .gnav .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+    font-size:8px;font-weight:600;color:#AFC3DC;cursor:pointer;
+    transition:transform .22s cubic-bezier(.33,1,.68,1), color .22s ease;}
+  .gnav .tab .ic{position:relative;width:26px;height:26px;border-radius:100px;display:grid;
+    place-items:center;transition:background .22s ease, border-color .22s ease;}
+  .gnav .tab .ic .ico{width:17px;height:17px;}
+  .gnav .tab.on{color:#D4A017;transform:translateY(-4px) scale(1.06);}
+  .gnav .tab.on .ic{background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.32);}
+  .gnav .b{position:absolute;top:-3px;right:-3px;background:#D4A017;color:#0B2D5B;
+    font-size:6.5px;font-weight:800;border-radius:100px;padding:1px 3.5px;}
   @media (max-width:480px){
     body{padding:14px 10px 24px;}
     .phone{height:calc(100vh - 120px); border-radius:34px; padding:8px;}
@@ -253,6 +333,40 @@
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="m5.4 12.6 4.4 4.4 8.8-9.4"/>
     </symbol>
+
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 11.2 12 4.8l8 6.4V20H4z"/><path d="M9.8 20v-5.4h4.4V20"/>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+      <rect x="4" y="4" width="6.4" height="6.4" rx="1.6"/><rect x="13.6" y="4" width="6.4" height="6.4" rx="1.6"/>
+      <rect x="4" y="13.6" width="6.4" height="6.4" rx="1.6"/><rect x="13.6" y="13.6" width="6.4" height="6.4" rx="1.6"/>
+    </symbol>
+    <symbol id="i-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 3.8v5.8a2 2 0 0 0 4 0V3.8"/><path d="M10 9.8v10.4"/><path d="M16.6 3.8c-1.5 0-2.2 1.6-2.2 3.8s.7 3.2 2.2 3.2v9.4"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 4.6c-8 0-13 3.6-13 9.4a5 5 0 0 0 5 5c5.8 0 8-5 8-14.4Z"/><path d="M6.4 20.4C8 15 11 11 15.6 8.6"/>
+    </symbol>
+    <symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.2 16.2v-3.4l1.8-4.2h12l1.8 4.2v3.4"/><path d="M4.2 16.2h15.6"/>
+      <circle cx="7.4" cy="17.6" r="1.7"/><circle cx="16.6" cy="17.6" r="1.7"/>
+    </symbol>
+    <symbol id="i-bike" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6.2" cy="17" r="2.6"/><circle cx="17.8" cy="17" r="2.6"/>
+      <path d="M6.2 17 10 8.8h3.6l4.2 8.2"/><path d="M9.2 8.8h4.6"/>
+    </symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9.4 7a2.9 2.9 0 1 1 4.1 4.1L20 17.5 17.5 20l-6.4-6.5a2.9 2.9 0 0 1-4.1-4.1l2.7 2.7 1.4-1.4z"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.4 16.4h11.2l-1.4-2.2v-3.4a4.2 4.2 0 1 0-8.4 0v3.4z"/><path d="M10.4 19.4a1.9 1.9 0 0 0 3.2 0"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="11" cy="11" r="6.2"/><path d="M15.6 15.6 20 20"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+      <path d="m12 4.6 2.3 4.8 5.2.7-3.8 3.6 1 5.2-4.7-2.5-4.7 2.5 1-5.2L4.5 10l5.2-.7z"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -260,13 +374,14 @@
   <strong>Supreme Mall</strong> <span>· static design preview of the Flutter home screen</span>
 </div>
 <div class="switcher">
-  <button class="active" data-target="home">Home</button>
+  <button class="active" data-target="dashboard">Dashboard</button>
+  <button data-target="home">Sign-up home</button>
   <button data-target="customer">Customer sign-up</button>
   <button data-target="business">Business sign-up</button>
 </div>
 
 <div class="phone">
-  <div class="screen" id="screen-home">
+  <div class="screen" id="screen-home" hidden>
 
     <div class="hero">
       <div class="topbar">
@@ -400,6 +515,118 @@
       <p class="minor">Preview build &mdash; details are not sent to a server yet.</p>
     </div>
   </div>
+
+  <div class="screen" id="screen-dashboard">
+    <div class="dash">
+      <div class="dash-scroll">
+        <div class="d-top">
+          <div class="d-pill"><svg class="ico"><use href="#i-pin"/></svg> Nyeri Town <span style="color:#AFC3DC">&#9662;</span></div>
+          <div class="d-bell"><svg class="ico"><use href="#i-bell"/></svg></div>
+        </div>
+
+        <div class="d-greet">Karibu tena</div>
+        <div class="d-h1">What do you need<br /><em>today?</em></div>
+
+        <div class="d-search"><svg class="ico"><use href="#i-search"/></svg> Search shops, food, produce</div>
+
+        <div class="d-sec"><span>SERVICES</span><span>3 live now</span></div>
+        <div class="bento">
+          <div class="bt hero live-sky">
+            <div class="chip"><svg class="ico"><use href="#i-store"/></svg></div>
+            <div class="sp" style="flex:1">
+              <b>Shopping</b>
+              <small>12 stores open near you</small>
+            </div>
+            <svg class="arrow"><use href="#i-arrow-r"/></svg>
+          </div>
+          <div class="bt live-gold">
+            <div class="chip"><svg class="ico"><use href="#i-food"/></svg></div>
+            <div class="sp"></div>
+            <b>Food</b>
+            <small>Restaurants &amp; takeaways</small>
+          </div>
+          <div class="bt live-em">
+            <div class="chip"><svg class="ico"><use href="#i-leaf"/></svg></div>
+            <div class="sp"></div>
+            <b>Fresh</b>
+            <small>Farm &amp; market produce</small>
+          </div>
+          <div class="bt">
+            <div class="chip"><svg class="ico"><use href="#i-car"/></svg></div>
+            <div class="sp"></div>
+            <div class="row"><b>Rides</b><span class="soon-badge">SOON</span></div>
+            <small>Coming in a later phase</small>
+          </div>
+          <div class="bt">
+            <div class="chip"><svg class="ico"><use href="#i-bike"/></svg></div>
+            <div class="sp"></div>
+            <div class="row"><b>Boda</b><span class="soon-badge">SOON</span></div>
+            <small>Coming in a later phase</small>
+          </div>
+          <div class="bt">
+            <div class="chip"><svg class="ico"><use href="#i-doc"/></svg></div>
+            <div class="sp"></div>
+            <div class="row"><b>Errands</b><span class="soon-badge">SOON</span></div>
+            <small>Coming in a later phase</small>
+          </div>
+          <div class="bt">
+            <div class="chip"><svg class="ico"><use href="#i-tools"/></svg></div>
+            <div class="sp"></div>
+            <div class="row"><b>Home</b><span class="soon-badge">SOON</span></div>
+            <small>Coming in a later phase</small>
+          </div>
+        </div>
+
+        <div class="d-order">
+          <span class="dot"></span>
+          <div>
+            <b>Order #SM-1042 &middot; On the way</b>
+            <small>Nyeri Fresh Mart &middot; rider Brian, 12 min</small>
+          </div>
+          <span class="track">Track</span>
+        </div>
+
+        <div class="d-sec"><span>NEAR YOU</span><span style="color:#3498DB">See all</span></div>
+        <div class="near">
+            <div class="mcard">
+              <div class="top">
+                <div class="chip" style="color:#3498DB"><svg class="ico"><use href="#i-store"/></svg></div>
+                <span class="rate"><svg class="ico"><use href="#i-star"/></svg>4.7</span>
+              </div>
+              <b>Nyeri Fresh Mart</b>
+              <span class="dept" style="color:#3498DB">Shopping</span>
+              <small>Kimathi Way &middot; 20 min</small>
+            </div>
+            <div class="mcard">
+              <div class="top">
+                <div class="chip" style="color:#D4A017"><svg class="ico"><use href="#i-food"/></svg></div>
+                <span class="rate"><svg class="ico"><use href="#i-star"/></svg>4.8</span>
+              </div>
+              <b>Mama Ngina Cafe</b>
+              <span class="dept" style="color:#D4A017">Food</span>
+              <small>Town centre &middot; 25 min</small>
+            </div>
+            <div class="mcard">
+              <div class="top">
+                <div class="chip" style="color:#27AE60"><svg class="ico"><use href="#i-leaf"/></svg></div>
+                <span class="rate"><svg class="ico"><use href="#i-star"/></svg>4.6</span>
+              </div>
+              <b>Karatina Greens</b>
+              <span class="dept" style="color:#27AE60">Fresh</span>
+              <small>Market day &middot; 40 min</small>
+            </div>
+        </div>
+      </div>
+
+      <div class="gnav">
+        <div class="tab on"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
+        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-bag"/></svg><span class="b">2</span></span>Cart</div>
+        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
+        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <p class="caption">
@@ -408,7 +635,7 @@
 </p>
 
 <script>
-  const screens = ['home', 'customer', 'business'];
+  const screens = ['dashboard', 'home', 'customer', 'business'];
 
   function show(target) {
     if (!screens.includes(target)) {

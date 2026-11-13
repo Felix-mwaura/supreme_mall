@@ -17,6 +17,9 @@ platform launching in Nyeri, Kenya.
 | Business sign-up | `lib/screens/auth/business_signup_screen.dart` | Business name, department/category picker, town/area, contact person, phone, email, password, documents checklist |
 | Application result | `lib/screens/auth/signup_result_screen.dart` | Customer: account ready. Business: reference number + pending-verification timeline |
 | Sign in | `lib/screens/auth/sign_in_screen.dart` | UI only — waits for the auth build |
+| Customer dashboard | `lib/screens/home/customer_home_screen.dart` | "Bento" direction: dark navy canvas, bento service grid (1 hero + 3 live + 4 "soon"), active order card, nearby merchants, frosted glass bottom nav |
+
+Signing up as a customer now continues straight into the dashboard.
 
 Design references are taken from the Developer Brief (sections 3–5) and the
 Phase 1 Roadmap (sections 2.1, 2.2 and 7 for the commission/department structure).
@@ -39,7 +42,8 @@ lib/
   services/
     account_service.dart        single seam for account creation (Supabase goes here)
   screens/
-    welcome_screen.dart         home screen
+    welcome_screen.dart         entry screen (account paths)
+    home/                       customer dashboard (Bento)
     auth/                       customer sign-up, business sign-up, result, sign in
   theme/                        colours, text styles, theme
   utils/validators.dart         phone / email / password / terms validation
