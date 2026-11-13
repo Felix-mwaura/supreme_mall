@@ -286,6 +286,96 @@
   .gnav .tab.on .ic{background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.32);}
   .gnav .b{position:absolute;top:-3px;right:-3px;background:#D4A017;color:#0B2D5B;
     font-size:6.5px;font-weight:800;border-radius:100px;padding:1px 3.5px;}
+
+  /* ---- categories / orders / profile (dark) ---- */
+  .sect{margin:18px 0 9px;font-size:9px;letter-spacing:1.3px;font-weight:700;color:#AFC3DC;
+    display:flex;align-items:center;justify-content:space-between;}
+  .sect .act{letter-spacing:0;color:#3498DB;font-size:10px;font-weight:600;}
+  .title{font-size:20px;font-weight:800;color:#F2F6FC;letter-spacing:-.4px;}
+  .subtitle{font-size:10.5px;color:#AFC3DC;margin-top:3px;}
+  .chips{display:flex;gap:7px;overflow-x:auto;margin-top:12px;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .fchip{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:100px;
+    border:1px solid rgba(255,255,255,.10);background:#0F2E52;color:#AFC3DC;font-size:10px;font-weight:600;}
+  .fchip .ico{width:11px;height:11px;}
+  .fchip.on{background:rgba(212,160,23,.15);border-color:rgba(212,160,23,.35);color:#D4A017;}
+  .dept-head{display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+  .dept-head .ic{width:24px;height:24px;border-radius:8px;background:#143A66;
+    border:1px solid rgba(255,255,255,.10);display:grid;place-items:center;}
+  .dept-head .ic .ico{width:13px;height:13px;}
+  .dept-head b{font-size:11.5px;color:#F2F6FC;}
+  .dept-head span{font-size:9px;color:#AFC3DC;}
+  .mrow{display:flex;align-items:center;gap:10px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:11px;margin-bottom:8px;}
+  .mrow .thumb{width:36px;height:36px;border-radius:11px;background:#143A66;
+    border:1px solid rgba(255,255,255,.10);display:grid;place-items:center;flex:0 0 auto;}
+  .mrow .thumb .ico{width:16px;height:16px;}
+  .mrow .body{flex:1;min-width:0;}
+  .mrow b{font-size:11px;color:#F2F6FC;display:flex;align-items:center;gap:5px;}
+  .mrow .dot{width:4px;height:4px;border-radius:50%;background:#27AE60;}
+  .mrow .dot.off{background:#AFC3DC;}
+  .mrow small{display:block;font-size:9px;color:#AFC3DC;margin-top:2px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;}
+  .mrow .rating{display:flex;align-items:center;gap:2px;font-size:8.5px;color:#F2F6FC;margin-top:3px;}
+  .mrow .rating .ico{width:9px;height:9px;color:#D4A017;}
+  .mrow .chev{width:14px;height:14px;color:#AFC3DC;flex:0 0 auto;}
+  .soon-row{display:flex;align-items:center;gap:10px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);border-radius:13px;padding:10px 12px;margin-bottom:8px;}
+  .soon-row .ico{width:15px;height:15px;color:#AFC3DC;flex:0 0 auto;}
+  .soon-row b{font-size:10.5px;color:#F2F6FC;flex:1;}
+
+  /* segmented control */
+  .seg{display:flex;height:40px;padding:4px;border-radius:100px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);margin-top:14px;}
+  .seg div{flex:1;display:grid;place-items:center;border-radius:100px;font-size:10.5px;
+    font-weight:600;color:#AFC3DC;}
+  .seg div.on{background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.35);color:#D4A017;
+    font-weight:700;}
+
+  /* order card + ladder */
+  .ocard{background:#0F2E52;border:1px solid rgba(255,255,255,.10);border-radius:16px;
+    padding:13px;margin-top:12px;}
+  .ocard .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .ocard .ref{font-size:8.5px;letter-spacing:.6px;color:#AFC3DC;}
+  .ocard b{font-size:12px;color:#F2F6FC;display:block;margin-top:2px;}
+  .ocard .status{font-size:8.5px;font-weight:800;color:#D4A017;background:rgba(212,160,23,.15);
+    border:1px solid rgba(212,160,23,.30);border-radius:100px;padding:4px 8px;white-space:nowrap;}
+  .ladder{display:flex;gap:3px;margin-top:14px;}
+  .ladder div{flex:1;}
+  .ladder .bar{height:3px;border-radius:100px;background:rgba(255,255,255,.10);}
+  .ladder .bar.done{background:#D4A017;}
+  .ladder p{font-size:6.8px;margin-top:5px;color:#AFC3DC;text-align:center;}
+  .ladder p.done{color:#F2F6FC;font-weight:700;}
+  .ocard .lines{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.10);}
+  .ocard .line{display:flex;gap:7px;font-size:9.5px;color:#F2F6FC;margin-bottom:3px;}
+  .ocard .line span{color:#AFC3DC;font-weight:700;}
+  .ocard .foot{display:flex;align-items:center;margin-top:10px;}
+  .ocard .foot .tot{font-size:10px;color:#AFC3DC;}
+  .ocard .foot b{font-size:11.5px;color:#F2F6FC;margin-left:5px;}
+  .ocard .foot .btn{margin-left:auto;font-size:9px;font-weight:800;color:#D4A017;
+    background:rgba(212,160,23,.15);border:1px solid rgba(212,160,23,.30);border-radius:100px;
+    padding:5px 10px;}
+
+  /* profile */
+  .phead{display:flex;align-items:center;gap:11px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:13px;margin-top:14px;}
+  .avatar{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#E8BF4A,#D4A017);color:#0B2D5B;font-weight:800;font-size:15px;}
+  .phead b{font-size:12px;color:#F2F6FC;display:block;}
+  .phead small{font-size:9.5px;color:#AFC3DC;display:block;margin-top:2px;}
+  .phead .tagline{display:inline-block;margin-top:5px;font-size:6.5px;font-weight:800;letter-spacing:.8px;
+    background:#143A66;color:#AFC3DC;border-radius:100px;padding:2px 6px;}
+  .prow{display:flex;align-items:center;gap:10px;background:#0F2E52;
+    border:1px solid rgba(255,255,255,.10);border-radius:13px;padding:12px 13px;margin-bottom:8px;}
+  .prow .ico{width:15px;height:15px;color:#AFC3DC;flex:0 0 auto;}
+  .prow b{flex:1;font-size:10.5px;font-weight:600;color:#F2F6FC;}
+  .prow .val{font-size:9px;color:#AFC3DC;}
+  .prow .chev{width:13px;height:13px;color:#AFC3DC;}
+  .signout{height:46px;border-radius:13px;background:#0F2E52;border:1px solid rgba(212,160,23,.30);
+    display:flex;align-items:center;justify-content:center;gap:7px;color:#D4A017;
+    font-size:11px;font-weight:700;margin-top:16px;}
+  .signout .ico{width:14px;height:14px;}
+  .pfoot{text-align:center;font-size:8.5px;line-height:1.7;color:#AFC3DC;margin-top:14px;}
   @media (max-width:480px){
     body{padding:14px 10px 24px;}
     .phone{height:calc(100vh - 120px); border-radius:34px; padding:8px;}
@@ -619,11 +709,190 @@
       </div>
 
       <div class="gnav">
-        <div class="tab on"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
-        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
-        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-bag"/></svg><span class="b">2</span></span>Cart</div>
-        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
-        <div class="tab"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
+        <div class="tab on" data-dash="dashboard"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab" data-dash="categories"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
+        <div class="tab" data-dash="orders"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
+        <div class="tab" data-dash="profile"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-categories" hidden>
+    <div class="dash">
+      <div class="dash-scroll">
+        <div class="title">Browse</div>
+        <div class="subtitle">Every Supreme Mall department in one place.</div>
+        <div class="d-search" style="margin-top:14px"><svg class="ico"><use href="#i-search"/></svg> Search businesses or areas</div>
+        <div class="chips">
+          <span class="fchip on">All</span>
+          <span class="fchip"><svg class="ico"><use href="#i-store"/></svg>Shopping</span>
+          <span class="fchip"><svg class="ico"><use href="#i-food"/></svg>Food</span>
+          <span class="fchip"><svg class="ico"><use href="#i-leaf"/></svg>Fresh</span>
+        </div>
+
+        <div class="dept-head"><div class="ic" style="color:#3498DB"><svg class="ico"><use href="#i-store"/></svg></div><b>Supreme Shopping</b><span>2</span></div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#3498DB"><svg class="ico"><use href="#i-store"/></svg></div>
+          <div class="body">
+            <b>Nyeri Fresh Mart<span class="dot"></span></b>
+            <small>Groceries · household</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.7<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Kimathi Way &middot; 20 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#3498DB"><svg class="ico"><use href="#i-store"/></svg></div>
+          <div class="body">
+            <b>Chieni Supermarket<span class="dot"></span></b>
+            <small>Groceries · electronics</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.5<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Town centre &middot; 30 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+
+        <div class="dept-head"><div class="ic" style="color:#D4A017"><svg class="ico"><use href="#i-food"/></svg></div><b>Supreme Food</b><span>2</span></div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#D4A017"><svg class="ico"><use href="#i-food"/></svg></div>
+          <div class="body">
+            <b>Mama Ngina Cafe<span class="dot"></span></b>
+            <small>Kenyan · breakfast</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.8<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Town centre &middot; 25 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#D4A017"><svg class="ico"><use href="#i-food"/></svg></div>
+          <div class="body">
+            <b>Hotel Nokras Grill<span class="dot"></span></b>
+            <small>Grill · full menu</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.6<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Ruring&rsquo;u &middot; 35 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+
+        <div class="dept-head"><div class="ic" style="color:#27AE60"><svg class="ico"><use href="#i-leaf"/></svg></div><b>Supreme Fresh</b><span>2</span></div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#27AE60"><svg class="ico"><use href="#i-leaf"/></svg></div>
+          <div class="body">
+            <b>Karatina Greens<span class="dot"></span></b>
+            <small>From KSh 40/kg</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.6<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Market day &middot; 40 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+        
+        <div class="mrow">
+          <div class="thumb" style="color:#27AE60"><svg class="ico"><use href="#i-leaf"/></svg></div>
+          <div class="body">
+            <b>Kamakwa Farm Produce<span class="dot off"></span></b>
+            <small>From KSh 55/kg</small>
+            <div class="rating"><svg class="ico"><use href="#i-star"/></svg>4.4<span style="color:#AFC3DC">&nbsp;&middot;&nbsp;Kamakwa &middot; 45 min</span></div>
+          </div>
+          <svg class="chev"><use href="#i-arrow-r"/></svg>
+        </div>
+
+        <div class="sect"><span>COMING SOON</span></div>
+        
+        <div class="soon-row"><svg class="ico"><use href="#i-car"/></svg><b>Rides</b><span class="soon-badge">SOON</span></div>
+        <div class="soon-row"><svg class="ico"><use href="#i-bike"/></svg><b>Boda</b><span class="soon-badge">SOON</span></div>
+        <div class="soon-row"><svg class="ico"><use href="#i-doc"/></svg><b>Errands</b><span class="soon-badge">SOON</span></div>
+        <div class="soon-row"><svg class="ico"><use href="#i-tools"/></svg><b>Home</b><span class="soon-badge">SOON</span></div>
+      </div>
+      <div class="gnav">
+        <div class="tab" data-dash="dashboard"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab on" data-dash="categories"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
+        <div class="tab" data-dash="orders"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
+        <div class="tab" data-dash="profile"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-orders" hidden>
+    <div class="dash">
+      <div class="dash-scroll">
+        <div class="title">Orders</div>
+        <div class="subtitle">Track deliveries and reorder in two taps.</div>
+        <div class="seg"><div class="on">Active</div><div>Past</div></div>
+
+        <div class="ocard">
+          <div class="top">
+            <div>
+              <div class="ref">#SM-1042 &middot; SHOPPING</div>
+              <b>Nyeri Fresh Mart</b>
+            </div>
+            <span class="status">On the way</span>
+          </div>
+          <div class="ladder">
+            <div><div class="bar done"></div><p class="done">Received</p></div>
+            <div><div class="bar done"></div><p class="done">Preparing</p></div>
+            <div><div class="bar done"></div><p class="done">On the way</p></div>
+            <div><div class="bar"></div><p>Delivered</p></div>
+          </div>
+          <div class="lines">
+            <div class="line"><span>1&times;</span>Unga 2kg</div>
+            <div class="line"><span>2&times;</span>Milk 500ml</div>
+            <div class="line"><span>1&times;</span>Cooking oil 1L</div>
+          </div>
+          <div class="foot"><span class="tot">Total</span><b>KSh 1,240</b><span class="btn">Track order</span></div>
+        </div>
+
+        <div class="sect"><span>PAST ORDERS</span></div>
+        <div class="mrow">
+          <div class="thumb" style="color:#27AE60"><svg class="ico"><use href="#i-check"/></svg></div>
+          <div class="body"><b>Mama Ngina Cafe</b><small>#SM-1031 &middot; Yesterday, 1:04 PM</small></div>
+          <b style="font-size:10.5px;color:#F2F6FC">KSh 650</b>
+        </div>
+        <div class="mrow">
+          <div class="thumb" style="color:#27AE60"><svg class="ico"><use href="#i-check"/></svg></div>
+          <div class="body"><b>Karatina Greens</b><small>#SM-1018 &middot; Mon, 9:41 AM</small></div>
+          <b style="font-size:10.5px;color:#F2F6FC">KSh 380</b>
+        </div>
+      </div>
+      <div class="gnav">
+        <div class="tab" data-dash="dashboard"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab" data-dash="categories"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
+        <div class="tab on" data-dash="orders"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
+        <div class="tab" data-dash="profile"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-profile" hidden>
+    <div class="dash">
+      <div class="dash-scroll">
+        <div class="title">Profile</div>
+        <div class="phead">
+          <div class="avatar">WK</div>
+          <div>
+            <b>Wanjiku Kamau</b>
+            <small>+254 712 &bull;&bull;&bull; 678</small>
+            <span class="tagline">DEMO PROFILE</span>
+          </div>
+        </div>
+
+        <div class="sect"><span>ACCOUNT</span></div>
+        <div class="prow"><svg class="ico"><use href="#i-pin"/></svg><b>Saved addresses</b><span class="val">2</span><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+        <div class="prow"><svg class="ico"><use href="#i-bag"/></svg><b>Payment methods</b><span class="val">M-Pesa</span><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+        <div class="prow"><svg class="ico"><use href="#i-bell"/></svg><b>Notifications</b><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+        <div class="prow"><svg class="ico"><use href="#i-doc"/></svg><b>Language</b><span class="val">English</span><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+
+        <div class="sect"><span>SUPPORT</span></div>
+        <div class="prow"><svg class="ico"><use href="#i-shield"/></svg><b>Help &amp; support</b><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+        <div class="prow"><svg class="ico"><use href="#i-lock"/></svg><b>Privacy &amp; terms</b><svg class="chev"><use href="#i-arrow-r"/></svg></div>
+
+        <div class="signout"><svg class="ico"><use href="#i-arrow-l"/></svg> Sign out</div>
+        <div class="pfoot">Supreme Mall &middot; v0.3 preview build<br />Supreme Solutions Ltd &middot; Nyeri, Kenya</div>
+      </div>
+      <div class="gnav">
+        <div class="tab" data-dash="dashboard"><span class="ic"><svg class="ico"><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab" data-dash="categories"><span class="ic"><svg class="ico"><use href="#i-grid"/></svg></span>Categories</div>
+        <div class="tab" data-dash="orders"><span class="ic"><svg class="ico"><use href="#i-doc"/></svg></span>Orders</div>
+        <div class="tab on" data-dash="profile"><span class="ic"><svg class="ico"><use href="#i-user"/></svg></span>Profile</div>
       </div>
     </div>
   </div>
@@ -635,7 +904,7 @@
 </p>
 
 <script>
-  const screens = ['dashboard', 'home', 'customer', 'business'];
+  const screens = ['dashboard', 'categories', 'orders', 'profile', 'home', 'customer', 'business'];
 
   function show(target) {
     if (!screens.includes(target)) {
@@ -651,6 +920,25 @@
     const el = document.getElementById('screen-' + target);
     if (el) el.scrollTop = 0;
   }
+
+  // In-phone glass nav: switches between dashboard tabs.
+  const dashScreens = ['dashboard', 'categories', 'orders', 'profile'];
+
+  function showDash(target) {
+    dashScreens.forEach(function (name) {
+      const el = document.getElementById('screen-' + name);
+      if (el) el.hidden = name !== target;
+    });
+    document.querySelectorAll('.gnav .tab').forEach(function (tab) {
+      tab.classList.toggle('on', tab.dataset.dash === target);
+    });
+    const active = document.getElementById('screen-' + target);
+    if (active) active.scrollTop = 0;
+  }
+
+  document.querySelectorAll('.gnav .tab').forEach(function (tab) {
+    tab.addEventListener('click', function () { showDash(tab.dataset.dash); });
+  });
 
   document.querySelectorAll('[data-target]').forEach(function (el) {
     el.addEventListener('click', function () { show(el.dataset.target); });

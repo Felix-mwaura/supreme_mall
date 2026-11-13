@@ -5,7 +5,11 @@ import 'package:flutter/services.dart';
 
 import '../theme/app_colors.dart';
 
-enum NavTab { home, categories, cart, orders, profile }
+/// Tab order must match the shell's [IndexedStack] children.
+///
+/// `cart` returns as the centre tab with the cart/checkout milestone — it needs
+/// the orders database, so it is deliberately absent for now.
+enum NavTab { home, categories, orders, profile }
 
 /// Floating frosted-glass bottom navigation.
 ///
@@ -24,19 +28,20 @@ class GlassBottomNav extends StatelessWidget {
     super.key,
     required this.currentTab,
     required this.onTabSelected,
-    this.cartCount = 0,
+    this.badges = const <NavTab, int>{},
     this.enableBlur = true,
   });
 
   final NavTab currentTab;
   final ValueChanged<NavTab> onTabSelected;
-  final int cartCount;
+
+  /// Per-tab counters (e.g. items in the cart). Empty means no badges.
+  final Map<NavTab, int> badges;
   final bool enableBlur;
 
   static const List<_TabSpec> _tabs = <_TabSpec>[
     _TabSpec(NavTab.home, 'Home', Icons.home_rounded),
     _TabSpec(NavTab.categories, 'Categories', Icons.grid_view_rounded),
-    _TabSpec(NavTab.cart, 'Cart', Icons.shopping_bag_rounded),
     _TabSpec(NavTab.orders, 'Orders', Icons.receipt_long_rounded),
     _TabSpec(NavTab.profile, 'Profile', Icons.person_rounded),
   ];
@@ -63,7 +68,7 @@ class GlassBottomNav extends StatelessWidget {
             child: _NavButton(
               spec: spec,
               selected: selected,
-              badgeCount: spec.tab == NavTab.cart ? cartCount : 0,
+              badgeCount: badges[spec.tab] ?? 0,
               onTap: () {
                 if (spec.tab != currentTab) {
                   HapticFeedback.lightImpact();
