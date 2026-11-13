@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supreme Mall — Home screen preview</title>
+<style>
+  :root{
+    --navy:#0B2D5B; --navy-deep:#071E3D; --navy-lift:#16407C;
+    --ivory:#F8FAFC; --gold:#D4A017; --gold-ink:#9A7208;
+    --emerald:#27AE60; --sky:#3498DB; --charcoal:#4B5563;
+    --slate:#8A97A8; --line:#E3E9F2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    gap:18px; padding:28px 16px 40px;
+    background:
+      radial-gradient(900px 500px at 15% -10%, #12365f 0%, rgba(18,54,95,0) 60%),
+      radial-gradient(700px 400px at 100% 0%, #1a3f6e 0%, rgba(26,63,110,0) 55%),
+      #eef2f8;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--charcoal);
+  }
+  .preview-bar{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+    gap:8px; color:#dbe6f5; font-size:12px; letter-spacing:.3px;
+  }
+  .preview-bar strong{color:#fff; font-weight:700;}
+  .switcher{display:flex; gap:6px; background:rgba(255,255,255,.10); padding:5px; border-radius:100px;}
+  .switcher button{
+    border:0; cursor:pointer; font:inherit; font-size:12px; font-weight:600;
+    padding:7px 13px; border-radius:100px; color:#c9d8ec; background:transparent;
+  }
+  .switcher button.active{background:#fff; color:var(--navy);}
+
+  .phone{
+    width:390px; max-width:100%; height:820px; max-height:calc(100vh - 150px);
+    background:var(--navy); border-radius:46px; padding:10px;
+    box-shadow:0 30px 70px rgba(7,30,61,.35), 0 2px 0 rgba(255,255,255,.15) inset;
+    flex:0 0 auto;
+  }
+  .screen{
+    position:relative; height:100%; width:100%; border-radius:38px; overflow-y:auto;
+    background:var(--ivory); scrollbar-width:none;
+  }
+  .screen::-webkit-scrollbar{display:none;}
+  .screen[hidden]{display:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--navy-lift) 100%);
+    border-radius:0 0 30px 30px; padding:20px 20px 60px;
+  }
+  .hero::after{
+    content:""; position:absolute; width:220px; height:220px; top:-80px; right:-70px;
+    background:radial-gradient(circle, rgba(212,160,23,.22) 0%, rgba(212,160,23,0) 70%);
+  }
+  .topbar{display:flex; align-items:center; justify-content:space-between; position:relative;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .mark{
+    width:40px; height:40px; border-radius:12px; display:grid; place-items:center;
+    background:linear-gradient(135deg,#E8BF4A,var(--gold));
+    color:var(--navy); font-weight:900; font-size:21px;
+  }
+  .wordmark{font-size:14.5px; font-weight:800; letter-spacing:2.2px; color:#fff; line-height:1;}
+  .byline{font-size:10px; letter-spacing:.4px; color:rgba(255,255,255,.62); margin-top:4px;}
+  .signin-chip{
+    border:1px solid rgba(255,255,255,.25); border-radius:100px; padding:8px 12px;
+    display:flex; align-items:center; gap:6px; color:#fff; font-size:11.5px; font-weight:700;
+  }
+  h1{
+    margin-top:28px; font-size:30px; line-height:1.16; letter-spacing:-.6px;
+    font-weight:800; color:#fff;
+  }
+  h1 span{color:var(--gold);}
+  .hero p{
+    margin-top:12px; max-width:340px; font-size:13.5px; line-height:1.5;
+    color:rgba(255,255,255,.66);
+  }
+  .pills{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px;}
+  .pill{
+    display:flex; align-items:center; gap:6px; padding:7px 10px; border-radius:100px;
+    border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.12);
+    color:#fff; font-size:11.5px; font-weight:600; white-space:nowrap;
+  }
+  .pill.soon{background:rgba(255,255,255,.07); color:rgba(255,255,255,.54);}
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--gold);}
+
+  /* ---------- account card ---------- */
+  .sheet{padding:0 18px 26px; margin-top:-34px; position:relative;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:24px; padding:18px;
+    box-shadow:0 10px 26px rgba(11,45,91,.08);
+  }
+  .card-head{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  h2{font-size:20px; font-weight:800; letter-spacing:-.3px; color:var(--navy);}
+  .free{
+    background:rgba(212,160,23,.15); color:var(--gold-ink); border-radius:100px;
+    padding:4px 8px; font-size:9.5px; font-weight:700; letter-spacing:1px;
+  }
+  .sub{margin-top:5px; font-size:12.5px; line-height:1.45; color:var(--charcoal);}
+  .role{
+    margin-top:14px; border:1px solid var(--line); border-radius:20px; padding:16px;
+    box-shadow:0 6px 18px rgba(11,45,91,.04);
+  }
+  .role-top{display:flex; gap:12px; align-items:flex-start;}
+  .tile{
+    width:44px; height:44px; border-radius:13px; display:grid; place-items:center;
+    font-size:20px; flex:0 0 auto;
+  }
+  .tile.navy{background:rgba(11,45,91,.08);}
+  .tile.gold{background:rgba(212,160,23,.15);}
+  .role h3{font-size:16px; font-weight:700; color:var(--navy); line-height:1.3;}
+  .role .desc{margin-top:3px; font-size:12.5px; line-height:1.45; color:var(--charcoal);}
+  .btn{
+    margin-top:14px; width:100%; height:48px; border:0; border-radius:14px; cursor:pointer;
+    font:inherit; font-size:14.5px; font-weight:700; display:flex; align-items:center;
+    justify-content:center; gap:8px;
+  }
+  .btn-navy{background:var(--navy); color:#fff;}
+  .btn-navy:hover{background:#0a2649;}
+  .btn-gold{background:var(--gold); color:var(--navy);}
+  .btn-gold:hover{background:#c79614;}
+
+  .note{
+    margin-top:14px; display:flex; gap:10px; align-items:flex-start;
+    background:rgba(39,174,96,.12); border-radius:14px; padding:12px 14px;
+  }
+  .note p{font-size:11.5px; line-height:1.45; color:var(--charcoal);}
+  .meta{display:flex; justify-content:center; gap:4px; margin-top:18px; font-size:12px; color:var(--charcoal);}
+  .meta button{
+    border:0; background:transparent; font:inherit; font-size:12.5px; font-weight:700;
+    color:var(--navy); cursor:pointer; padding:6px;
+  }
+  .legal{margin-top:10px; text-align:center; font-size:11px; line-height:1.5; color:var(--slate);}
+  .company{
+    margin-top:8px; text-align:center; font-size:9.5px; letter-spacing:1.1px;
+    font-weight:600; color:var(--slate);
+  }
+
+  /* ---------- form screens ---------- */
+  .form-header{
+    background:linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 60%, var(--navy-lift) 100%);
+    border-radius:0 0 26px 26px; padding:18px 20px 20px;
+  }
+  .back{
+    width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+    border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07);
+    color:#fff; font-size:16px; cursor:pointer;
+  }
+  .role-badge{
+    display:inline-block; margin-left:12px; padding:5px 10px; border-radius:100px;
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.12);
+    color:#fff; font-size:9.5px; font-weight:700; letter-spacing:1.2px;
+  }
+  .form-header h2{color:#fff; font-size:23px; margin-top:16px;}
+  .form-header p{color:rgba(255,255,255,.62); font-size:12.5px; line-height:1.45; margin-top:5px;}
+  .form-body{padding:18px 18px 30px;}
+  .section-label{
+    display:flex; align-items:center; gap:10px; margin:6px 0 10px;
+    font-size:11px; font-weight:700; letter-spacing:1.4px; color:var(--navy-lift);
+  }
+  .section-label::after{content:""; flex:1; height:1px; background:var(--line);}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px;}
+  .input{
+    display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
+    border-radius:14px; padding:0 14px; height:52px; color:var(--slate); font-size:13px;
+  }
+  .input input{
+    flex:1; border:0; outline:none; font:inherit; font-size:14.5px; font-weight:600;
+    color:var(--navy); background:transparent; min-width:0;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    padding:9px 12px; border-radius:100px; border:1.4px solid var(--line); background:#fff;
+    font-size:12.5px; font-weight:600; color:var(--navy); cursor:pointer;
+  }
+  .chip.selected{background:var(--navy); border-color:var(--navy); color:#fff;}
+  .hint{font-size:11px; line-height:1.45; color:var(--slate); margin-top:8px;}
+  .terms{display:flex; gap:10px; align-items:flex-start; margin:16px 0;}
+  .tick{
+    width:22px; height:22px; border-radius:7px; border:1.6px solid var(--line);
+    flex:0 0 auto; margin-top:1px;
+  }
+  .terms p{font-size:11.5px; line-height:1.45; color:var(--charcoal);}
+  .assurance{
+    margin-top:20px; display:flex; gap:8px; align-items:flex-start; background:#fff;
+    border:1px solid var(--line); border-radius:14px; padding:14px;
+  }
+  .assurance p{font-size:11px; line-height:1.5; color:var(--slate);}
+  .minor{text-align:center; font-size:11px; color:var(--slate); margin-top:14px;}
+
+  .caption{
+    color:#b9cbe4; font-size:11.5px; text-align:center; max-width:390px; line-height:1.5;
+  }
+  .ico{width:18px; height:18px; flex:0 0 auto; vertical-align:middle; display:inline-block;}
+  .tile .ico{width:22px; height:22px;}
+  .note .ico, .assurance .ico, .back .ico{width:16px; height:16px;}
+  .btn .ico{width:17px; height:17px;}
+  .signin-chip .ico{width:13px; height:13px;}
+  .tile.navy{color:var(--navy);}
+  .tile.gold{color:var(--navy);}
+  .note span.shield{color:var(--emerald); display:flex;}
+  .assurance span.fold{color:var(--navy); display:flex;}
+  .chip .ico{width:12px; height:12px; margin-left:5px;}
+  @media (max-width:480px){
+    body{padding:14px 10px 24px;}
+    .phone{height:calc(100vh - 120px); border-radius:34px; padding:8px;}
+    .screen{border-radius:27px;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.2 7.5h11.6l1 12.2H5.2l1-12.2Z"/><path d="M9.2 7.5V5.9a2.8 2.8 0 0 1 5.6 0v1.6"/>
+    </symbol>
+    <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.2 9.6V20h15.6V9.6"/><path d="M3 9.6 4.8 4.4h14.4L21 9.6z"/><path d="M9.6 20v-5.8h4.8V20"/>
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8.2" r="3.4"/><path d="M4.8 20c1.3-3.6 4-5.4 7.2-5.4s5.9 1.8 7.2 5.4"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5.6" width="18" height="12.8" rx="2.6"/><path d="M4.2 7.4 12 13l7.8-5.6"/>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="10.8" width="14" height="9.2" rx="2.6"/><path d="M8.6 10.8V8a3.4 3.4 0 0 1 6.8 0v2.8"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20.6s6.4-6.1 6.4-10.8a6.4 6.4 0 1 0-12.8 0C5.6 14.5 12 20.6 12 20.6Z"/><circle cx="12" cy="9.6" r="2.3"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.8 3.6h6.6l3.8 3.8v13H6.8z"/><path d="M13.4 3.6v3.8h3.8"/><path d="M9.4 12.4h5.2M9.4 15.6h5.2"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.6 7.4h5.6l2 2.4h9.2V20H3.6z"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.6 19 6.4v5.4c0 4.3-2.9 7.5-7 8.6-4.1-1.1-7-4.3-7-8.6V6.4z"/><path d="m9.2 11.8 2 2 3.6-3.8"/>
+    </symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.4 12h14.2M13 6.6 18.4 12 13 17.4"/>
+    </symbol>
+    <symbol id="i-arrow-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19.6 12H5.4M11 6.6 5.6 12 11 17.4"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m5.4 12.6 4.4 4.4 8.8-9.4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="preview-bar">
+  <strong>Supreme Mall</strong> <span>· static design preview of the Flutter home screen</span>
+</div>
+<div class="switcher">
+  <button class="active" data-target="home">Home</button>
+  <button data-target="customer">Customer sign-up</button>
+  <button data-target="business">Business sign-up</button>
+</div>
+
+<div class="phone">
+  <div class="screen" id="screen-home">
+
+    <div class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark">S</div>
+          <div>
+            <div class="wordmark">SUPREME MALL</div>
+            <div class="byline">by Supreme Solutions Ltd</div>
+          </div>
+        </div>
+        <div class="signin-chip"><svg class="ico"><use href="#i-arrow-r"/></svg> Sign in</div>
+      </div>
+
+      <h1>One app.<br />Multiple services.<br /><span>Endless solutions.</span></h1>
+      <p>Shop, eat, buy fresh produce and get deliveries across Nyeri &mdash; all from one account.</p>
+
+      <div class="pills">
+        <div class="pill"><span class="dot"></span>Shopping</div>
+        <div class="pill"><span class="dot"></span>Food</div>
+        <div class="pill"><span class="dot"></span>Fresh</div>
+        <div class="pill soon">Rides &middot; soon</div>
+        <div class="pill soon">Boda &middot; soon</div>
+        <div class="pill soon">Errands &middot; soon</div>
+        <div class="pill soon">Home &middot; soon</div>
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="card">
+        <div class="card-head">
+          <h2>Create your account</h2>
+          <span class="free">FREE</span>
+        </div>
+        <p class="sub">Choose how you want to use Supreme Mall.</p>
+
+        <div class="role">
+          <div class="role-top">
+            <div class="tile navy"><svg class="ico"><use href="#i-bag"/></svg></div>
+            <div>
+              <h3>Sign up as a customer</h3>
+              <p class="desc">Order groceries, meals and fresh produce, and follow every delivery.</p>
+            </div>
+          </div>
+          <button class="btn btn-navy" data-target="customer">Create customer account <svg class="ico"><use href="#i-arrow-r"/></svg></button>
+        </div>
+
+        <div class="role">
+          <div class="role-top">
+            <div class="tile gold"><svg class="ico"><use href="#i-store"/></svg></div>
+            <div>
+              <h3>Sign up as a business</h3>
+              <p class="desc">List your shop, restaurant or produce stall and start receiving orders.</p>
+            </div>
+          </div>
+          <button class="btn btn-gold" data-target="business">Register my business <svg class="ico"><use href="#i-arrow-r"/></svg></button>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="shield"><svg class="ico"><use href="#i-shield"/></svg></span>
+        <p>Every business is verified by Supreme Solutions Ltd before it can accept orders.</p>
+      </div>
+
+      <div class="meta">Already have an account? <button data-target="signin">Sign in</button></div>
+      <p class="legal">By continuing you agree to our Terms of Service<br />and Privacy Policy.</p>
+      <p class="company">SUPREME SOLUTIONS LTD &middot; NYERI, KENYA</p>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-customer" hidden>
+    <div class="form-header">
+      <div>
+        <span class="back" data-target="home"><svg class="ico"><use href="#i-arrow-l"/></svg></span><span class="role-badge">CUSTOMER ACCOUNT</span>
+      </div>
+      <h2>Create your account</h2>
+      <p>One account for shopping, meals, fresh produce and deliveries.</p>
+    </div>
+    <div class="form-body">
+      <div class="section-label">YOUR DETAILS</div>
+      <div class="field"><label>Full name</label><div class="input"><svg class="ico"><use href="#i-user"/></svg><input placeholder="e.g. Wanjiku Kamau" /></div></div>
+      <div class="field"><label>Phone number (M-Pesa)</label><div class="input"><span>+254&nbsp;</span><input placeholder="712 345 678" /></div></div>
+      <div class="field"><label>Email (optional)</label><div class="input"><svg class="ico"><use href="#i-mail"/></svg><input placeholder="you@example.com" /></div></div>
+      <div class="section-label">SECURITY</div>
+      <div class="field"><label>Create password</label><div class="input"><svg class="ico"><use href="#i-lock"/></svg><input type="password" placeholder="At least 8 characters" /></div></div>
+      <p class="hint">Use 8+ characters with at least one letter and one number.</p>
+
+      <div class="terms"><span class="tick"></span><p>I agree to the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</p></div>
+      <button class="btn btn-navy preview-only">Create account <svg class="ico"><use href="#i-arrow-r"/></svg></button>
+      <p class="minor">Preview build &mdash; details are not sent to a server yet.</p>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-business" hidden>
+    <div class="form-header">
+      <div>
+        <span class="back" data-target="home"><svg class="ico"><use href="#i-arrow-l"/></svg></span><span class="role-badge">BUSINESS ACCOUNT</span>
+      </div>
+      <h2>Register your business</h2>
+      <p>Sell on Supreme Mall. We verify every business before it goes live.</p>
+    </div>
+    <div class="form-body">
+      <div class="section-label">BUSINESS DETAILS</div>
+      <div class="field"><label>Business name</label><div class="input"><svg class="ico"><use href="#i-store"/></svg><input placeholder="e.g. Nyeri Fresh Mart" /></div></div>
+      <p class="hint" style="margin:0 0 8px; color:var(--navy); font-weight:700; font-size:12.5px;">What does your business sell?</p>
+      <div class="chips">
+        <span class="chip selected">Shopping<svg class="ico"><use href="#i-check"/></svg></span>
+        <span class="chip">Food</span>
+        <span class="chip">Fresh</span>
+        <span class="chip" style="color:var(--slate)">Rides &middot; soon</span>
+        <span class="chip" style="color:var(--slate)">Boda &middot; soon</span>
+        <span class="chip" style="color:var(--slate)">Errands &middot; soon</span>
+        <span class="chip" style="color:var(--slate)">Home &middot; soon</span>
+      </div>
+      <p class="hint">Shopping, Food and Fresh are open for applications today. Rides, Boda, Errands and Home open in a later phase &mdash; you can still register your interest.</p>
+
+      <div class="field" style="margin-top:16px;"><label>Town / area</label><div class="input"><svg class="ico"><use href="#i-pin"/></svg><input value="Nyeri Town" /></div></div>
+      <div class="field"><label>Contact person</label><div class="input"><svg class="ico"><use href="#i-doc"/></svg><input placeholder="Owner or manager" /></div></div>
+
+      <div class="section-label">ACCOUNT &amp; CONTACT</div>
+      <div class="field"><label>Business phone (M-Pesa)</label><div class="input"><span>+254&nbsp;</span><input placeholder="712 345 678" /></div></div>
+      <div class="field"><label>Business email</label><div class="input"><svg class="ico"><use href="#i-mail"/></svg><input placeholder="orders@yourbusiness.co.ke" /></div></div>
+      <div class="field"><label>Create password</label><div class="input"><svg class="ico"><use href="#i-lock"/></svg><input type="password" placeholder="At least 8 characters" /></div></div>
+
+      <div class="assurance">
+        <span class="fold"><svg class="ico"><use href="#i-folder"/></svg></span>
+        <p><strong style="color:var(--navy)">Have these ready:</strong> business permit, national ID of the owner and &mdash; if you want card payments &mdash; a bank account or M-Pesa paybill. Review usually takes 1&ndash;2 business days.</p>
+      </div>
+
+      <div class="terms"><span class="tick"></span><p>I confirm the details are accurate and accept the <strong>Partner Terms</strong> and <strong>Commission Schedule</strong>.</p></div>
+      <button class="btn btn-gold preview-only">Submit application <svg class="ico"><use href="#i-arrow-r"/></svg></button>
+      <p class="minor">Preview build &mdash; details are not sent to a server yet.</p>
+    </div>
+  </div>
+</div>
+
+<p class="caption">
+  Static HTML mock used for design review. The running app is Flutter &mdash;
+  <code>lib/screens/welcome_screen.dart</code>, <code>lib/screens/auth/*</code>.
+</p>
+
+<script>
+  const screens = ['home', 'customer', 'business'];
+
+  function show(target) {
+    if (!screens.includes(target)) {
+      alert('Sign-in is not connected yet — the next step is Supabase authentication.');
+      return;
+    }
+    screens.forEach(function (name) {
+      document.getElementById('screen-' + name).hidden = name !== target;
+    });
+    document.querySelectorAll('.switcher button').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.target === target);
+    });
+    const el = document.getElementById('screen-' + target);
+    if (el) el.scrollTop = 0;
+  }
+
+  document.querySelectorAll('[data-target]').forEach(function (el) {
+    el.addEventListener('click', function () { show(el.dataset.target); });
+  });
+
+  document.querySelectorAll('.preview-only').forEach(function (el) {
+    el.addEventListener('click', function () {
+      alert('Static preview — in the app this validates the form and continues to the confirmation screen.');
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      if (chip.textContent.includes('soon')) { alert('Opens in a later phase — you can still register interest.'); return; }
+      document.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+    });
+  });
+</script>
+</body>
+</html>
