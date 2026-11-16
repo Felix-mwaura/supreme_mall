@@ -16,10 +16,13 @@ import '../../widgets/dark_surface.dart';
 /// [ThemeData]: the auth flow is still light, and the appearance toggle
 /// (System / Light / Dark) lands with the token pass in a later milestone.
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key, this.onOpenCategories});
+  const HomeTab({super.key, this.onOpenCategories, this.firstName});
 
   /// Switches the shell to the Categories tab (service tiles, "See all").
   final VoidCallback? onOpenCategories;
+
+  /// Signed-in customer's first name, for a personal greeting.
+  final String? firstName;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class HomeTab extends StatelessWidget {
             const _TopBar(),
             const SizedBox(height: 22),
             Text(
-              'Karibu tena',
+              firstName == null ? 'Karibu tena' : 'Karibu tena, $firstName',
               style: AppText.caption.copyWith(color: AppColors.inkMutedOnDark, fontSize: 12.5),
             ),
             const SizedBox(height: 5),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/department.dart';
-import '../../services/account_service.dart';
+import '../../services/auth_service.dart';
+import '../../services/supabase_bootstrap.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text.dart';
 import '../../utils/validators.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/error_banner.dart';
 import '../../widgets/form_fields.dart';
 import '../../widgets/signup_scaffold.dart';
 import 'sign_in_screen.dart';
@@ -36,6 +39,7 @@ class _BusinessSignupScreenState extends State<BusinessSignupScreen> {
   String? _departmentError;
   bool _acceptedTerms = false;
   String? _termsError;
+  String? _error;
   bool _submitting = false;
 
   @override
@@ -54,6 +58,7 @@ class _BusinessSignupScreenState extends State<BusinessSignupScreen> {
 
     final bool formValid = _formKey.currentState?.validate() ?? false;
     setState(() {
+      _error = null;
       _departmentError = _departmentId == null ? 'Choose what your business sells.' : null;
       _termsError = _acceptedTerms
           ? null
@@ -66,37 +71,70 @@ class _BusinessSignupScreenState extends State<BusinessSignupScreen> {
 
     setState(() => _submitting = true);
 
-    final AccountResult result = await AccountService.instance.submitBusinessApplication(
-      BusinessSignupRequest(
+    try {
+      final BusinessSignupOutcome outcome = await SupabaseBootstrap.auth.signUpBusiness(
         businessName: _businessName.text.trim(),
         contactName: _contactName.text.trim(),
-        departmentId: _departmentId!,
         phone: '+254${Validators.normaliseKenyanPhone(_phone.text)}',
         email: _email.text.trim(),
-        area: _area.text.trim(),
         password: _password.text,
-      ),
-    );
+        area: _area.text.trim(),
+        departmentIds: <String>[_departmentId!],
+      );
 
-    if (!mounted) {
-      return;
-    }
-    setState(() => _submitting = false);
+      if (!mounted) {
+        return;
+      }
+      setState(() => _submitting = false);
 
-    final SupremeDepartment department = supremeDepartments.firstWhere(
-      (SupremeDepartment d) => d.id == _departmentId,
-      orElse: () => supremeDepartments.first,
-    );
+      if (outcome == BusinessSignupOutcome.awaitingEmailConfirmation) {
+        await showDialog<void>(
+          context: context,
+          builder: (BuildContext ctx) => AlertDialog(
+            title: const Text('Check your email'),
+            content: Text(
+              'Confirm ${_email.text.trim()}, then sign in to finish submitting '
+              'your business application.',
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        if (!mounted) {
+          return;
+        }
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (BuildContext _) => const SignInScreen()),
+        );
+        return;
+      }
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(
-        builder: (BuildContext _) => SignupResultScreen.business(
-          businessName: _businessName.text.trim(),
-          reference: result.referenceId,
-          departmentName: department.shortName,
+      final SupremeDepartment department = supremeDepartments.firstWhere(
+        (SupremeDepartment d) => d.id == _departmentId,
+        orElse: () => supremeDepartments.first,
+      );
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (BuildContext _) => SignupResultScreen.business(
+            businessName: _businessName.text.trim(),
+            departmentName: department.shortName,
+          ),
         ),
-      ),
-    );
+      );
+    } on AuthFailure catch (failure) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _submitting = false;
+        _error = failure.message;
+      });
+    }
   }
 
   @override
@@ -110,6 +148,8 @@ class _BusinessSignupScreenState extends State<BusinessSignupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            if (_error != null)
+              ErrorBanner(message: _error!, onDismiss: () => setState(() => _error = null)),
             const FormSectionLabel(label: 'Business details'),
             SupremeTextField(
               label: 'Business name',
@@ -243,9 +283,7 @@ class _BusinessSignupScreenState extends State<BusinessSignupScreen> {
               foreground: AppColors.navy,
               icon: Icons.arrow_forward,
             ),
-            const SizedBox(height: 14),
-            const PreviewBuildNote(),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -310,7 +348,7 @@ class _DocumentsNote extends StatelessWidget {
           Text(
             'Business permit, national ID of the owner and — if you want card '
             'payments — a bank account or M-Pesa paybill. Review usually takes '
-            '${AccountService.businessReviewWindow}.',
+            '${AppConfig.businessReviewWindow}.',
             style: AppText.caption.copyWith(fontSize: 11, color: AppColors.slate, height: 1.5),
           ),
         ],

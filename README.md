@@ -13,20 +13,44 @@ platform launching in Nyeri, Kenya.
 | Screen | File | Notes |
 | --- | --- | --- |
 | Home | `lib/screens/welcome_screen.dart` | Brand hero, the seven department pills (Phase 1 live / later-phase "soon"), and the two account paths: **Sign up as a customer** and **Sign up as a business** |
-| Customer sign-up | `lib/screens/auth/customer_signup_screen.dart` | Name, M-Pesa phone, optional email, password, terms. Validated locally |
-| Business sign-up | `lib/screens/auth/business_signup_screen.dart` | Business name, department/category picker, town/area, contact person, phone, email, password, documents checklist |
-| Application result | `lib/screens/auth/signup_result_screen.dart` | Customer: account ready. Business: reference number + pending-verification timeline |
-| Sign in | `lib/screens/auth/sign_in_screen.dart` | UI only — waits for the auth build |
 | Customer shell | `lib/screens/home/customer_home_screen.dart` | Frosted glass nav over an `IndexedStack` of four tabs; each tab keeps its own scroll position |
 | Home tab | `lib/screens/home/tabs/home_tab.dart` | "Bento" grid: hero Shopping + medium Food/Fresh + four "soon" tiles, active order card, nearby merchants |
 | Categories tab | `lib/screens/home/tabs/categories_tab.dart` | Directory of businesses grouped by department, search + filter chips, "coming soon" block |
 | Orders tab | `lib/screens/home/tabs/orders_tab.dart` | Active order with a Received → Preparing → On the way → Delivered ladder, plus history |
-| Profile tab | `lib/screens/home/tabs/profile_tab.dart` | Identity card, account/support rows, working sign out |
+| Profile tab | `lib/screens/home/tabs/profile_tab.dart` | Real identity from `profiles`, account/support rows, working sign out |
 
-Signing up as a customer now continues straight into the dashboard.
+**Milestone 2 — Supabase foundation and real authentication.**
+
+| Screen | File | Notes |
+| --- | --- | --- |
+| Auth gate | `lib/screens/auth/auth_gate.dart` | Root widget. No session → welcome screen; customer → dashboard; business owner → business status |
+| Customer sign-up | `lib/screens/auth/customer_signup_screen.dart` | Creates a Supabase user (email + password), profile row via trigger; email is required now |
+| Business sign-up | `lib/screens/auth/business_signup_screen.dart` | Creates the user, then the `businesses` row (`status = 'pending'`) and its `business_departments` link |
+| Sign in | `lib/screens/auth/sign_in_screen.dart` | Real `signInWithPassword`, password reset by email, inline error mapping |
+| Business status | `lib/screens/business/business_status_screen.dart` | Reads its real status; can pull to refresh. Approval is not possible from the app |
+| Config error | `lib/screens/config_missing_screen.dart` | Explains a build made without Supabase credentials, instead of failing later |
+| Application result | `lib/screens/auth/signup_result_screen.dart` | Post-submission confirmation for both account types |
+
+Data access lives in `lib/services/auth_service.dart` (auth + profile + own business),
+with typed errors surface-mapped by `lib/utils/auth_errors.dart`.
 
 Design references are taken from the Developer Brief (sections 3–5) and the
 Phase 1 Roadmap (sections 2.1, 2.2 and 7 for the commission/department structure).
+
+### Database (Supabase)
+
+Project **supreme_mall**, ref `gfqpjdtbhsipquvdfkfn`, eu-central-1, Postgres 17.
+The deployed schema is reproduced for review in
+[`supabase/migrations/0001_foundation.sql`](supabase/migrations/0001_foundation.sql).
+
+- Tables: `departments` (7 seeded, ids mirroring `lib/models/department.dart`),
+  `profiles`, `businesses`, `business_departments` (many-to-many), `business_documents`.
+- A new `auth.users` row creates its `profiles` row automatically; `account_type`
+  metadata can only produce `customer` or `business_owner`.
+- RLS is on for every table. Owners see only their own profile/business/documents;
+  `guard_*` triggers stop a user changing their own `role` or a business's review
+  fields — those are administrator-only (`is_admin()`).
+- Passwords never touch our tables: Supabase Auth owns credentials.
 
 ### Design system
 - Palette in `lib/theme/app_colors.dart`: Supreme Navy `#0B2D5B`, Ivory White `#F8FAFC`,
@@ -39,37 +63,57 @@ Phase 1 Roadmap (sections 2.1, 2.2 and 7 for the commission/department structure
 
 ```
 lib/
-  main.dart                     app entry (SupremeMallApp)
+  main.dart                     app entry: Supabase init, then AuthGate
+  config/
+    env.dart                    SUPABASE_URL / SUPABASE_ANON_KEY from --dart-define
+    app_config.dart             review window, support address
   models/
     department.dart             the seven service departments + Phase 1 flags
     account_role.dart           customer vs business
+    app_profile.dart            profiles row
+    business_application.dart   businesses row + status enum
   data/
-    demo_data.dart              sample merchants + orders (replaced by Supabase)
+    demo_data.dart              sample merchants/orders for the catalogue (Milestone 3)
   services/
-    account_service.dart        single seam for account creation (Supabase goes here)
+    supabase_bootstrap.dart     initialises Supabase once, exposes AuthService
+    auth_service.dart           sign up / sign in / sign out / reset / load profile
   screens/
     welcome_screen.dart         entry screen (account paths)
     home/                       customer dashboard (Bento)
-    auth/                       customer sign-up, business sign-up, result, sign in
+    business/                   business status while awaiting approval
+    auth/                       sign-up, sign-in, result, auth gate
   theme/                        colours, text styles, theme
-  utils/validators.dart         phone / email / password / terms validation
-  widgets/                      buttons, logo, role cards, form fields, scaffold
+  utils/
+    validators.dart             phone / email / password / terms validation
+    auth_errors.dart            Supabase error → human message
+    money.dart                  KSh formatting
+  widgets/                      buttons, logo, nav, cards, form fields, banners
+supabase/migrations/            deployed schema, for review
+test/                           widget + unit tests
 ```
 
 ## Running it
 
+The Supabase URL and **publishable** key are injected at build time so no
+credentials are committed:
+
 ```bash
+cp env.example.json env.json      # then paste your project values
 flutter pub get
-flutter run                      # device or emulator
-flutter test                     # widget tests in test/welcome_screen_test.dart
+flutter run --dart-define-from-file=env.json
+flutter test
 flutter analyze
 ```
 
-No third-party packages are used yet — the app depends only on the Flutter SDK.
+`env.json` is git-ignored. Never put the service-role key in it — the client only
+needs the publishable key, and RLS enforces the rest.
+
+Without `env.json` the app opens a configuration screen explaining what is missing
+instead of throwing network errors at the first tap.
 
 ## Design preview (no Flutter SDK needed)
 
-`design_preview/index.html` is a static HTML mock of the three built screens for quick
+`design_preview/index.html` is a static HTML mock of the built screens for quick
 client review. Serve it with any static file server:
 
 ```bash
@@ -78,22 +122,27 @@ cd design_preview && python3 -m http.server 3000
 
 ## Current limitations
 
-- Nothing is persisted: `AccountService` resolves locally after a short delay. Both methods
-  carry `TODO(supabase)` markers — planned tables are `profiles` (customers) and
-  `businesses` (merchant applications, `status = 'pending'`).
-- No OTP/SMS verification, no password reset, no merchant dashboard, no storefronts,
-  no payments.
+- **Email confirmation is off** (Supabase auto-confirm) because no custom SMTP or
+  domain exists yet. Sign-up therefore produces an active session immediately.
+  Pre-pilot this becomes a 6-digit OTP typed into the app — not a magic link.
+- Password reset sends a Supabase email and needs the project's redirect allow list;
+  with the built-in mailer it only reaches project members until custom SMTP exists.
+- The password floor in Supabase Auth is 6 characters; the client requires 8 with a
+  letter and a number. The stricter client rule is what real users meet.
+- Business documents are collected as metadata columns; the upload + review workflow
+  arrives with the admin milestone.
+- Customers cannot read `businesses` at all yet — no public read policy exists until
+  the catalogue milestone needs it.
+- Categories and Orders still render sample data from `lib/data/demo_data.dart`.
 - **No cart tab.** It needs the orders database, so the shell ships with four tabs
   (Home, Categories, Orders, Profile) and the cart returns as the centre tab with
   the cart/checkout milestone.
-- Categories and Orders render sample data from `lib/data/demo_data.dart`.
-- Business documents are described in the UI but not yet uploaded.
 
 ## Suggested next steps
 
-1. Connect Supabase auth + `profiles` / `businesses` tables (replacing `AccountService`).
-2. SMS OTP verification on the Kenyan phone number captured at sign-up.
-3. Storefronts: retail grid (Shopping), menu with option groups (hotel restaurants),
-   produce by weight (Fresh) behind the four shared seams.
-4. Cart tab + single checkout with one sub-order per business.
-5. Merchant dashboard for Phase 1 departments.
+1. Milestone 3 — catalogue: `departments`-scoped storefronts, products, images, RLS
+   for approved businesses only, replacing `demo_data.dart`.
+2. Customer address book + delivery zones per town.
+3. Cart tab and single checkout with one sub-order per business.
+4. Merchant dashboard for Phase 1 departments.
+5. Pre-pilot: custom SMTP + OTP email confirmation, then pilot launch.

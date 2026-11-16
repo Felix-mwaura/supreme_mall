@@ -60,7 +60,7 @@ class Validators {
     return null;
   }
 
-  /// Email is optional for customers, mandatory for businesses.
+  /// Required: email is the account identity for both account types.
   static String? email(String? value, {bool required = true}) {
     final String text = (value ?? '').trim();
     if (text.isEmpty) {

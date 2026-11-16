@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supreme_mall/models/app_profile.dart';
 import 'package:supreme_mall/screens/home/customer_home_screen.dart';
 import 'package:supreme_mall/widgets/glass_bottom_nav.dart';
 
@@ -46,7 +47,9 @@ void main() {
 
     await tapTab(tester, 'Profile');
     expect(currentTab(tester), NavTab.profile);
-    expect(find.text('Wanjiku Kamau'), findsOneWidget);
+    // No profile injected (signed-out preview shell): neutral identity.
+    expect(find.text('Your account'), findsOneWidget);
+    expect(find.text('CUSTOMER ACCOUNT'), findsOneWidget);
 
     await tapTab(tester, 'Home');
     expect(currentTab(tester), NavTab.home);
@@ -59,6 +62,64 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(currentTab(tester), NavTab.categories);
+  });
+
+  testWidgets('signed-in profile personalises greeting and identity card', (
+    WidgetTester tester,
+  ) async {
+    const AppProfile profile = AppProfile(
+      id: '00000000-0000-0000-0000-000000000001',
+      fullName: 'Wanjiku Kamau',
+      phone: '+254712345678',
+      role: 'customer',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CustomerHomeScreen(
+          profile: profile,
+          onSignOut: () async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Karibu tena, Wanjiku'), findsOneWidget);
+
+    await tapTab(tester, 'Profile');
+    expect(find.text('Wanjiku Kamau'), findsOneWidget);
+    expect(find.text('+254712345678'), findsOneWidget);
+    expect(find.text('WK'), findsOneWidget);
+  });
+
+  testWidgets('sign out calls the session callback', (WidgetTester tester) async {
+    bool signedOut = false;
+    const AppProfile profile = AppProfile(
+      id: '00000000-0000-0000-0000-000000000001',
+      fullName: 'Wanjiku Kamau',
+      role: 'customer',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CustomerHomeScreen(
+          profile: profile,
+          onSignOut: () async {
+            signedOut = true;
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tapTab(tester, 'Profile');
+    final Finder signOut = find.text('Sign out');
+    await tester.ensureVisible(signOut);
+    await tester.pumpAndSettle();
+    await tester.tap(signOut);
+    await tester.pumpAndSettle();
+
+    expect(signedOut, isTrue);
   });
 
   testWidgets('cart tab is not part of the shell yet', (WidgetTester tester) async {

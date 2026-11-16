@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
-import '../../services/account_service.dart';
+import '../../services/auth_service.dart';
+import '../../services/supabase_bootstrap.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text.dart';
 import '../../utils/validators.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/error_banner.dart';
 import '../../widgets/form_fields.dart';
 import '../../widgets/signup_scaffold.dart';
 import 'sign_in_screen.dart';
 import 'signup_result_screen.dart';
 
-/// Customer account creation — the first of the two paths offered on the home
-/// screen. Fields follow the Phase 1 roadmap's shared customer platform:
-/// profile, phone (for M-Pesa and SMS notifications) and optional email.
+/// Customer account creation against Supabase Auth.
+///
+/// Email is required: it is the account identity (phone auth is disabled on the
+/// project). The phone number is kept because it is what M-Pesa and rider
+/// contact will use later.
 class CustomerSignupScreen extends StatefulWidget {
   const CustomerSignupScreen({super.key});
 
@@ -29,6 +33,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
 
   bool _acceptedTerms = false;
   String? _termsError;
+  String? _error;
   bool _submitting = false;
 
   @override
@@ -45,6 +50,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
 
     final bool formValid = _formKey.currentState?.validate() ?? false;
     setState(() {
+      _error = null;
       _termsError = _acceptedTerms ? null : 'Please accept the Terms of Service to continue.';
     });
 
@@ -54,28 +60,62 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
 
     setState(() => _submitting = true);
 
-    final AccountResult result = await AccountService.instance.createCustomerAccount(
-      CustomerSignupRequest(
+    try {
+      final bool signedIn = await SupabaseBootstrap.auth.signUpCustomer(
         fullName: _name.text.trim(),
         phone: '+254${Validators.normaliseKenyanPhone(_phone.text)}',
         email: _email.text.trim(),
         password: _password.text,
-      ),
-    );
+      );
 
-    if (!mounted) {
-      return;
-    }
-    setState(() => _submitting = false);
+      if (!mounted) {
+        return;
+      }
+      setState(() => _submitting = false);
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(
-        builder: (BuildContext _) => SignupResultScreen.customer(
-          firstName: _name.text.trim().split(' ').first,
-          reference: result.referenceId,
+      if (!signedIn) {
+        // Project has email confirmation enabled.
+        await showDialog<void>(
+          context: context,
+          builder: (BuildContext ctx) => AlertDialog(
+            title: const Text('Check your email'),
+            content: Text(
+              'We sent a confirmation link to ${_email.text.trim()}. '
+              'Open it, then sign in to finish setting up your account.',
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        if (!mounted) {
+          return;
+        }
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (BuildContext _) => const SignInScreen()),
+        );
+        return;
+      }
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (BuildContext _) => SignupResultScreen.customer(
+            firstName: _name.text.trim().split(' ').first,
+          ),
         ),
-      ),
-    );
+      );
+    } on AuthFailure catch (failure) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _submitting = false;
+        _error = failure.message;
+      });
+    }
   }
 
   @override
@@ -89,6 +129,8 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            if (_error != null)
+              ErrorBanner(message: _error!, onDismiss: () => setState(() => _error = null)),
             const FormSectionLabel(label: 'Your details'),
             SupremeTextField(
               label: 'Full name',
@@ -99,21 +141,21 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
               autofillHints: const <String>[AutofillHints.name],
             ),
             const SizedBox(height: 14),
-            SupremePhoneField(
-              controller: _phone,
-              validator: Validators.phone,
-              label: 'Phone number (M-Pesa)',
-            ),
-            const SizedBox(height: 14),
             SupremeTextField(
-              label: 'Email (optional)',
+              label: 'Email address',
               hint: 'you@example.com',
               prefixIcon: Icons.mail_outline,
               controller: _email,
               keyboardType: TextInputType.emailAddress,
               textCapitalization: TextCapitalization.none,
-              validator: (String? value) => Validators.email(value, required: false),
+              validator: Validators.email,
               autofillHints: const <String>[AutofillHints.email],
+            ),
+            const SizedBox(height: 14),
+            SupremePhoneField(
+              controller: _phone,
+              validator: Validators.phone,
+              label: 'Phone number (M-Pesa)',
             ),
             const SizedBox(height: 22),
             const FormSectionLabel(label: 'Security'),
@@ -133,7 +175,8 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Use 8+ characters with at least one letter and one number.',
+                    'Use 8+ characters with at least one letter and one number. '
+                    'Your password is handled by Supabase Auth — we never store it.',
                     style: AppText.caption.copyWith(fontSize: 11, color: AppColors.slate),
                   ),
                 ),
@@ -177,8 +220,6 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
               loading: _submitting,
               icon: Icons.arrow_forward,
             ),
-            const SizedBox(height: 14),
-            const PreviewBuildNote(),
             const SizedBox(height: 6),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

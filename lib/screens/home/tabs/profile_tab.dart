@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/app_profile.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_text.dart';
 import '../../../widgets/dark_surface.dart';
 
-/// Profile tab — account, payment and support entry points.
+/// Profile tab — the signed-in person, their permissions and support links.
 ///
-/// Rows that need the backend (addresses, payment methods, notification
-/// preferences) are present but say so when tapped, rather than pretending to
-/// save anything. Sign out is real: it returns to the entry screen.
-class ProfileTab extends StatelessWidget {
-  const ProfileTab({super.key});
+/// Identity comes from the real `profiles` row supplied by [AuthGate]; nothing
+/// here is hard-coded. Rows that need a backend (addresses, payment methods,
+/// notifications) say so when tapped instead of pretending to save. Sign out
+/// ends the Supabase session.
+class ProfileTab extends StatefulWidget {
+  const ProfileTab({super.key, this.profile, this.onSignOut});
+
+  final AppProfile? profile;
+
+  /// Wired to `SupabaseBootstrap.auth.signOut()` by the auth gate.
+  final Future<void> Function()? onSignOut;
+
+  @override
+  State<ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
+  bool _signingOut = false;
 
   void _notYet(BuildContext context, String what) {
     ScaffoldMessenger.of(context)
@@ -29,8 +43,20 @@ class ProfileTab extends StatelessWidget {
       );
   }
 
-  void _signOut(BuildContext context) {
-    Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+  Future<void> _signOut(BuildContext context) async {
+    if (_signingOut) {
+      return;
+    }
+    setState(() => _signingOut = true);
+    if (widget.onSignOut != null) {
+      await widget.onSignOut!();
+    } else if (context.mounted) {
+      // Without a gate (widget tests) return to the entry point.
+      Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+    }
+    if (mounted) {
+      setState(() => _signingOut = false);
+    }
   }
 
   @override
@@ -47,7 +73,7 @@ class ProfileTab extends StatelessWidget {
               style: AppText.screenTitle.copyWith(fontSize: 24, color: AppColors.inkOnDark),
             ),
             const SizedBox(height: 16),
-            const _IdentityCard(),
+            _IdentityCard(profile: widget.profile),
             const SizedBox(height: 20),
             const DarkSectionLabel(label: 'Account'),
             _Row(
@@ -91,7 +117,7 @@ class ProfileTab extends StatelessWidget {
             ),
             const SizedBox(height: 22),
             GestureDetector(
-              onTap: () => _signOut(context),
+              onTap: _signingOut ? null : () => _signOut(context),
               behavior: HitTestBehavior.opaque,
               child: Container(
                 height: 50,
@@ -104,10 +130,17 @@ class ProfileTab extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Icon(Icons.logout_rounded, size: 16, color: AppColors.gold),
+                    if (_signingOut)
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.gold),
+                      )
+                    else
+                      const Icon(Icons.logout_rounded, size: 16, color: AppColors.gold),
                     const SizedBox(width: 8),
                     Text(
-                      'Sign out',
+                      _signingOut ? 'Signing out…' : 'Sign out',
                       style: AppText.button.copyWith(fontSize: 13, color: AppColors.gold),
                     ),
                   ],
@@ -116,7 +149,7 @@ class ProfileTab extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Supreme Mall · v0.3 preview build\nSupreme Solutions Ltd · Nyeri, Kenya',
+              'Supreme Mall · v0.4\nSupreme Solutions Ltd · Nyeri, Kenya',
               textAlign: TextAlign.center,
               style: AppText.caption.copyWith(
                 fontSize: 9.5,
@@ -132,7 +165,9 @@ class ProfileTab extends StatelessWidget {
 }
 
 class _IdentityCard extends StatelessWidget {
-  const _IdentityCard();
+  const _IdentityCard({this.profile});
+
+  final AppProfile? profile;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +189,7 @@ class _IdentityCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(
-              'WK',
+              profile?.initials ?? 'SM',
               style: AppText.cardTitle.copyWith(fontSize: 17, color: AppColors.navy),
             ),
           ),
@@ -164,12 +199,12 @@ class _IdentityCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Wanjiku Kamau',
+                  profile?.fullName.isNotEmpty == true ? profile!.fullName : 'Your account',
                   style: AppText.cardTitle.copyWith(fontSize: 14, color: AppColors.inkOnDark),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '+254 712 ••• 678',
+                  profile?.phone ?? 'No phone saved yet',
                   style: AppText.caption.copyWith(fontSize: 10.5, color: AppColors.inkMutedOnDark),
                 ),
                 const SizedBox(height: 6),
@@ -180,7 +215,7 @@ class _IdentityCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Text(
-                    'DEMO PROFILE',
+                    profile?.isBusiness == true ? 'BUSINESS ACCOUNT' : 'CUSTOMER ACCOUNT',
                     style: AppText.sectionLabel.copyWith(
                       fontSize: 7,
                       letterSpacing: 0.8,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../models/app_profile.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/glass_bottom_nav.dart';
 import 'tabs/categories_tab.dart';
@@ -15,7 +16,13 @@ import 'tabs/profile_tab.dart';
 /// The cart tab is intentionally missing — it needs the orders database, so it
 /// lands with the cart/checkout milestone (see [NavTab]).
 class CustomerHomeScreen extends StatefulWidget {
-  const CustomerHomeScreen({super.key});
+  const CustomerHomeScreen({super.key, this.profile, this.onSignOut});
+
+  /// The signed-in customer, shown in the greeting and on the profile tab.
+  final AppProfile? profile;
+
+  /// Ends the session; supplied by [AuthGate].
+  final Future<void> Function()? onSignOut;
 
   @override
   State<CustomerHomeScreen> createState() => _CustomerHomeScreenState();
@@ -44,10 +51,13 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
               child: IndexedStack(
                 index: _tab.index,
                 children: <Widget>[
-                  HomeTab(onOpenCategories: () => _select(NavTab.categories)),
+                  HomeTab(
+                    firstName: widget.profile?.firstName,
+                    onOpenCategories: () => _select(NavTab.categories),
+                  ),
                   const CategoriesTab(),
                   const OrdersTab(),
-                  const ProfileTab(),
+                  ProfileTab(profile: widget.profile, onSignOut: widget.onSignOut),
                 ],
               ),
             ),
