@@ -38,7 +38,7 @@ dependencies:
   # Supabase: auth, Postgres access and session persistence.
   # Only the publishable (anon) key is ever supplied to the client, via
   # --dart-define-from-file. Never add the service-role key here.
-  supabase_flutter: ^2.8.0
+  supabase_flutter: ^2.18.3
 
 dev_dependencies:
   flutter_test:
