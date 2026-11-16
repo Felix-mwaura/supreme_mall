@@ -10,9 +10,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Fail loudly and safely if the build was made without Supabase config,
-  // instead of throwing a socket error on the first tap.
+  // instead of throwing a socket error on the first tap. The screen is told
+  // which value is absent so a missing flag is distinguishable from a typo.
   if (!Env.isConfigured) {
-    runApp(const SupremeMallApp(home: ConfigMissingScreen()));
+    runApp(
+      SupremeMallApp(
+        home: ConfigMissingScreen(
+          hasUrl: Env.supabaseUrl.isNotEmpty,
+          hasKey: Env.supabaseAnonKey.isNotEmpty,
+        ),
+      ),
+    );
     return;
   }
 

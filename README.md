@@ -111,6 +111,23 @@ needs the publishable key, and RLS enforces the rest.
 Without `env.json` the app opens a configuration screen explaining what is missing
 instead of throwing network errors at the first tap.
 
+### Troubleshooting: "Supabase credentials" screen
+
+These values are compiled into the app. If the screen appears, the build never
+received them — restarting or hot-reloading will not help.
+
+| What the screen says | Cause | Fix |
+| --- | --- | --- |
+| No credentials in this build | the flag was never passed | start from a terminal with `--dart-define-from-file=env.json`, or use the committed `.vscode/launch.json` (F5) |
+| The anon key is missing | `SUPABASE_ANON_KEY` spelt differently or absent in `env.json` | names are case-sensitive: `SUPABASE_URL`, `SUPABASE_ANON_KEY` |
+| The project URL is missing | `SUPABASE_URL` spelt differently or absent | same |
+| All present, still failing | an old build is installed | `flutter clean && flutter run --dart-define-from-file=env.json` |
+
+Android Studio and VS Code **Run buttons do not pass extra arguments**: add
+`--dart-define-from-file=env.json` under *Additional arguments* in your run
+configuration, or use the included launch file. `env.json` must sit in the
+project root, next to `pubspec.yaml`.
+
 ## Design preview (no Flutter SDK needed)
 
 `design_preview/index.html` is a static HTML mock of the built screens for quick
