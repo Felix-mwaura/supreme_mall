@@ -1,0 +1,23 @@
+{
+  // F5 starts the app with the local Supabase credentials.
+  // env.json is git-ignored and lives in the project root; without this flag
+  // the app shows the "Supabase is not configured" screen.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Supreme Mall (env.json)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define-from-file=env.json"]
+    },
+    {
+      "name": "Supreme Mall (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--dart-define-from-file=env.json"]
+    }
+  ]
+}
