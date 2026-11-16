@@ -157,7 +157,7 @@ cd android && ./gradlew --stop && cd ..   # drop the 8 GB daemon
 flutter clean
 flutter pub get
 flutter analyze      # expect: No issues found!
-flutter test         # expect: 15 tests passing
+flutter test         # expect: 27 tests passing
 flutter run
 ```
 
