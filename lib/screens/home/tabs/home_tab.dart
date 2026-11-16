@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../models/department.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_text.dart';
-import '../../widgets/dark_surface.dart';
+import 'package:supreme_mall/models/department.dart';
+import 'package:supreme_mall/theme/app_colors.dart';
+import 'package:supreme_mall/theme/app_text.dart';
+import 'package:supreme_mall/widgets/dark_surface.dart';
 
 /// Home tab of the customer shell — the "Bento" service grid.
 ///
