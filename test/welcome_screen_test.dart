@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supreme_mall/main.dart';
+import 'package:supreme_mall/screens/welcome_screen.dart';
 
 void main() {
   testWidgets('home screen offers both account paths', (WidgetTester tester) async {
-    await tester.pumpWidget(const SupremeMallApp());
+    await tester.pumpWidget(const SupremeMallApp(home: WelcomeScreen()));
 
     expect(find.text('SUPREME MALL'), findsOneWidget);
     expect(find.text('Create your account'), findsOneWidget);
@@ -12,7 +13,7 @@ void main() {
   });
 
   testWidgets('customer path opens the customer sign-up form', (WidgetTester tester) async {
-    await tester.pumpWidget(const SupremeMallApp());
+    await tester.pumpWidget(const SupremeMallApp(home: WelcomeScreen()));
 
     final Finder cta = find.text('Create customer account');
     await tester.ensureVisible(cta);
@@ -26,7 +27,7 @@ void main() {
   });
 
   testWidgets('business path opens the business application form', (WidgetTester tester) async {
-    await tester.pumpWidget(const SupremeMallApp());
+    await tester.pumpWidget(const SupremeMallApp(home: WelcomeScreen()));
 
     final Finder cta = find.text('Register my business');
     await tester.ensureVisible(cta);
@@ -40,7 +41,7 @@ void main() {
   });
 
   testWidgets('customer form validates empty fields', (WidgetTester tester) async {
-    await tester.pumpWidget(const SupremeMallApp());
+    await tester.pumpWidget(const SupremeMallApp(home: WelcomeScreen()));
 
     final Finder cta = find.text('Create customer account');
     await tester.ensureVisible(cta);

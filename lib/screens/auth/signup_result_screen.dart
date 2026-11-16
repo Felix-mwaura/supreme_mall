@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/account_role.dart';
-import '../../services/account_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text.dart';
 import '../../widgets/app_button.dart';
-import '../home/customer_home_screen.dart';
 
 class ResultStep {
   const ResultStep({required this.label, this.detail, this.done = false});
@@ -32,7 +31,7 @@ class SignupResultScreen extends StatelessWidget {
 
   factory SignupResultScreen.customer({
     required String firstName,
-    required String reference,
+    String? reference,
   }) {
     return SignupResultScreen(
       eyebrow: AccountRole.customer.label,
@@ -41,7 +40,6 @@ class SignupResultScreen extends StatelessWidget {
           'Your account is ready. Add a delivery location and you can start '
           'ordering from Supreme Shopping, Supreme Food and Supreme Fresh.',
       reference: reference,
-      nextScreen: const CustomerHomeScreen(),
       steps: const <ResultStep>[
         ResultStep(label: 'Account created', done: true),
         ResultStep(label: 'Save your delivery location', detail: 'Nyeri Town and surrounding areas'),
@@ -52,15 +50,17 @@ class SignupResultScreen extends StatelessWidget {
 
   factory SignupResultScreen.business({
     required String businessName,
-    required String reference,
     required String departmentName,
+    String? reference,
   }) {
     return SignupResultScreen(
       eyebrow: 'Application received',
       title: 'Thank you,\n$businessName',
       message:
-          'We have your $departmentName application. Our team reviews your '
-          'documents and contacts you within ${AccountService.businessReviewWindow}.',
+          'We have your $departmentName application and it is now pending review. '
+          'Our team checks your documents and contacts you within '
+          '${AppConfig.businessReviewWindow}. You can sign in any time to see '
+          'your status.',
       reference: reference,
       steps: const <ResultStep>[
         ResultStep(label: 'Application submitted', done: true),

@@ -46,4 +46,16 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Local Supabase configuration (contains the publishable anon key).
+# env.example.json shows the shape; env.json stays on your machine.
+env.json
+*.env
+.env
+
+# Supabase CLI local state
 supabase.json
+
+# Gradle / Flutter build output
+/build/
+/android/build/

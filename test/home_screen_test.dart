@@ -1,59 +1,134 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supreme_mall/models/app_profile.dart';
 import 'package:supreme_mall/screens/home/customer_home_screen.dart';
 import 'package:supreme_mall/widgets/glass_bottom_nav.dart';
 
 void main() {
-  Future<void> pumpHome(WidgetTester tester) async {
+  Future<void> pumpShell(WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: CustomerHomeScreen()));
     await tester.pumpAndSettle();
   }
 
-  testWidgets('bento dashboard shows every department', (WidgetTester tester) async {
-    await pumpHome(tester);
-
-    // Headline + search affordance.
-    expect(find.text('Search shops, food, produce'), findsOneWidget);
-
-    // Live departments and later-phase departments share the grid.
-    expect(find.text('Food'), findsWidgets);
-    expect(find.text('Fresh'), findsWidgets);
-    expect(find.text('Rides'), findsOneWidget);
-    expect(find.text('Boda'), findsOneWidget);
-    expect(find.text('Errands'), findsOneWidget);
-    expect(find.text('Home'), findsWidgets);
-
-    // Later-phase tiles are badged, so the grid never over-promises.
-    expect(find.text('SOON'), findsNWidgets(4));
-  });
-
-  testWidgets('glass nav switches tabs', (WidgetTester tester) async {
-    await pumpHome(tester);
-
-    expect(find.text('Arrives in the next milestone'), findsNothing);
-
-    // "Home" also appears as a department tile, so target the nav explicitly.
+  /// Taps a tab through the floating navigation bar.
+  Future<void> tapTab(WidgetTester tester, String label) async {
     await tester.tap(
-      find.descendant(of: find.byType(GlassBottomNav), matching: find.text('Cart')),
+      find.descendant(of: find.byType(GlassBottomNav), matching: find.text(label)),
     );
     await tester.pumpAndSettle();
+  }
 
-    expect(find.text('Arrives in the next milestone'), findsOneWidget);
-    // Home content is no longer the active body.
-    expect(find.text('Search shops, food, produce'), findsNothing);
+  NavTab currentTab(WidgetTester tester) {
+    return tester.widget<GlassBottomNav>(find.byType(GlassBottomNav)).currentTab;
+  }
 
-    await tester.tap(
-      find.descendant(of: find.byType(GlassBottomNav), matching: find.text('Home')),
-    );
-    await tester.pumpAndSettle();
+  testWidgets('shell opens on Home with the bento grid', (WidgetTester tester) async {
+    await pumpShell(tester);
 
+    expect(currentTab(tester), NavTab.home);
     expect(find.text('Search shops, food, produce'), findsOneWidget);
-  });
-
-  testWidgets('active order card is visible', (WidgetTester tester) async {
-    await pumpHome(tester);
-
     expect(find.text('Order #SM-1042 · On the way'), findsOneWidget);
-    expect(find.text('Track'), findsOneWidget);
+
+    // Later-phase departments are present but badged.
+    expect(find.text('SOON'), findsWidgets);
+  });
+
+  testWidgets('navigation switches between the four tabs', (WidgetTester tester) async {
+    await pumpShell(tester);
+
+    await tapTab(tester, 'Categories');
+    expect(currentTab(tester), NavTab.categories);
+    expect(find.text('Browse'), findsOneWidget);
+    expect(find.text('Chieni Supermarket'), findsWidgets);
+
+    await tapTab(tester, 'Orders');
+    expect(currentTab(tester), NavTab.orders);
+    expect(find.text('Track deliveries and reorder in two taps.'), findsOneWidget);
+
+    await tapTab(tester, 'Profile');
+    expect(currentTab(tester), NavTab.profile);
+    // No profile injected (signed-out preview shell): neutral identity.
+    expect(find.text('Your account'), findsOneWidget);
+    expect(find.text('CUSTOMER ACCOUNT'), findsOneWidget);
+
+    await tapTab(tester, 'Home');
+    expect(currentTab(tester), NavTab.home);
+  });
+
+  testWidgets('service tiles jump to the Categories tab', (WidgetTester tester) async {
+    await pumpShell(tester);
+
+    await tester.tap(find.text('See all'));
+    await tester.pumpAndSettle();
+
+    expect(currentTab(tester), NavTab.categories);
+  });
+
+  testWidgets('signed-in profile personalises greeting and identity card', (
+    WidgetTester tester,
+  ) async {
+    const AppProfile profile = AppProfile(
+      id: '00000000-0000-0000-0000-000000000001',
+      fullName: 'Wanjiku Kamau',
+      phone: '+254712345678',
+      role: 'customer',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CustomerHomeScreen(
+          profile: profile,
+          onSignOut: () async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Karibu tena, Wanjiku'), findsOneWidget);
+
+    await tapTab(tester, 'Profile');
+    expect(find.text('Wanjiku Kamau'), findsOneWidget);
+    expect(find.text('+254712345678'), findsOneWidget);
+    expect(find.text('WK'), findsOneWidget);
+  });
+
+  testWidgets('sign out calls the session callback', (WidgetTester tester) async {
+    bool signedOut = false;
+    const AppProfile profile = AppProfile(
+      id: '00000000-0000-0000-0000-000000000001',
+      fullName: 'Wanjiku Kamau',
+      role: 'customer',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CustomerHomeScreen(
+          profile: profile,
+          onSignOut: () async {
+            signedOut = true;
+          },
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tapTab(tester, 'Profile');
+    final Finder signOut = find.text('Sign out');
+    await tester.ensureVisible(signOut);
+    await tester.pumpAndSettle();
+    await tester.tap(signOut);
+    await tester.pumpAndSettle();
+
+    expect(signedOut, isTrue);
+  });
+
+  testWidgets('cart tab is not part of the shell yet', (WidgetTester tester) async {
+    await pumpShell(tester);
+
+    expect(
+      find.descendant(of: find.byType(GlassBottomNav), matching: find.text('Cart')),
+      findsNothing,
+    );
+    expect(NavTab.values.length, 4);
   });
 }
