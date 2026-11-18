@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../models/app_profile.dart';
+import '../../models/department.dart';
+import '../../screens/catalogue/storefront_screen.dart';
+import '../../services/auth_service.dart';
+import '../../services/supabase_bootstrap.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/area_picker_sheet.dart';
 import '../../widgets/glass_bottom_nav.dart';
 import 'tabs/categories_tab.dart';
 import 'tabs/home_tab.dart';
@@ -31,6 +36,58 @@ class CustomerHomeScreen extends StatefulWidget {
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   NavTab _tab = NavTab.home;
 
+  /// Chosen delivery area; starts from the saved profile and is written back on
+  /// every change so it survives a reinstall.
+  String? _area;
+
+  @override
+  void initState() {
+    super.initState();
+    _area = widget.profile?.deliveryArea;
+  }
+
+  Future<void> _pickArea() async {
+    final String? chosen = await showAreaPicker(context, current: _area);
+    if (chosen == null || !mounted || chosen == _area) {
+      return;
+    }
+
+    final String? previous = _area;
+    setState(() => _area = chosen);
+
+    if (!SupabaseBootstrap.isInitialized) {
+      return;
+    }
+
+    try {
+      await SupabaseBootstrap.auth.updateDeliveryArea(chosen);
+    } on AuthFailure catch (failure) {
+      if (!mounted) {
+        return;
+      }
+      // Do not leave the UI claiming a saved area that the database rejected.
+      setState(() => _area = previous);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text('Could not save your area: ${failure.message}'),
+            backgroundColor: const Color(0xFF8E1B12),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+          ),
+        );
+    }
+  }
+
+  void _openDepartment(SupremeDepartment department) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext _) => StorefrontScreen(department: department),
+      ),
+    );
+  }
+
   void _select(NavTab tab) {
     if (tab == _tab) {
       return;
@@ -53,6 +110,9 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                 children: <Widget>[
                   HomeTab(
                     firstName: widget.profile?.firstName,
+                    area: _area,
+                    onPickArea: _pickArea,
+                    onOpenDepartment: _openDepartment,
                     onOpenCategories: () => _select(NavTab.categories),
                   ),
                   const CategoriesTab(),

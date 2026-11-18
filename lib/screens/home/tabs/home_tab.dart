@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:supreme_mall/models/catalogue.dart';
 import 'package:supreme_mall/models/department.dart';
+import 'package:supreme_mall/repositories/catalogue_repository.dart';
+import 'package:supreme_mall/screens/catalogue/storefront_screen.dart';
 import 'package:supreme_mall/theme/app_colors.dart';
 import 'package:supreme_mall/theme/app_text.dart';
 import 'package:supreme_mall/widgets/dark_surface.dart';
@@ -16,13 +19,69 @@ import 'package:supreme_mall/widgets/dark_surface.dart';
 /// [ThemeData]: the auth flow is still light, and the appearance toggle
 /// (System / Light / Dark) lands with the token pass in a later milestone.
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key, this.onOpenCategories, this.firstName});
+  const HomeTab({
+    super.key,
+    this.onOpenCategories,
+    this.firstName,
+    this.area,
+    this.onPickArea,
+    this.onOpenDepartment,
+  });
 
-  /// Switches the shell to the Categories tab (service tiles, "See all").
+  /// Switches the shell to the Categories tab ("See all").
   final VoidCallback? onOpenCategories;
 
   /// Signed-in customer's first name, for a personal greeting.
   final String? firstName;
+
+  /// Delivery area the customer picked, and how to change it.
+  final String? area;
+  final VoidCallback? onPickArea;
+
+  /// Opens a live department's storefront. Falls back to the Categories tab.
+  final ValueChanged<SupremeDepartment>? onOpenDepartment;
+
+  /// A live tile always ends up in that department's storefront: the shell
+  /// supplies the callback, and the tab can still open it on its own (tests,
+  /// or any future screen that embeds the dashboard).
+  /// The search bar on Home is a doorway, not a second search engine: tapping
+  /// it opens the merchant directory, where the query actually filters live
+  /// data. Without the shell's callback the Shopping storefront is the closest
+  /// equivalent, and it carries the same search field.
+  VoidCallback _openSearch(BuildContext context) {
+    return () {
+      final VoidCallback? open = onOpenCategories;
+      if (open != null) {
+        open();
+        return;
+      }
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (BuildContext _) => StorefrontScreen(
+            department: supremeDepartments.firstWhere(
+              (SupremeDepartment d) => d.id == 'shopping',
+              orElse: () => supremeDepartments.first,
+            ),
+          ),
+        ),
+      );
+    };
+  }
+
+  VoidCallback _openDepartment(BuildContext context, SupremeDepartment department) {
+    return () {
+      final ValueChanged<SupremeDepartment>? open = onOpenDepartment;
+      if (open != null) {
+        open(department);
+        return;
+      }
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (BuildContext _) => StorefrontScreen(department: department),
+        ),
+      );
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +97,7 @@ class HomeTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const _TopBar(),
+            _TopBar(area: area, onPickArea: onPickArea),
             const SizedBox(height: 22),
             Text(
               firstName == null ? 'Karibu tena' : 'Karibu tena, $firstName',
@@ -59,7 +118,18 @@ class HomeTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const DarkSearchField(),
+            // Inert field inside a tappable shell: a tap cannot raise a
+            // keyboard that types into nothing, and the card still announces
+            // itself as a button to screen readers.
+            Semantics(
+              button: true,
+              label: 'Search merchants',
+              child: GestureDetector(
+                onTap: _openSearch(context),
+                behavior: HitTestBehavior.opaque,
+                child: const IgnorePointer(child: DarkSearchField()),
+              ),
+            ),
             const SizedBox(height: 24),
             Row(
               children: <Widget>[
@@ -80,13 +150,30 @@ class HomeTab extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Bento: hero (Shopping), two medium (Food, Fresh).
-            _BentoTile(department: live[0], wide: true, height: 96, onTap: onOpenCategories),
+            _BentoTile(
+              department: live[0],
+              wide: true,
+              height: 96,
+              onTap: _openDepartment(context, live[0]),
+            ),
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
-                Expanded(child: _BentoTile(department: live[1], height: 108, onTap: onOpenCategories)),
+                Expanded(
+                  child: _BentoTile(
+                    department: live[1],
+                    height: 108,
+                    onTap: _openDepartment(context, live[1]),
+                  ),
+                ),
                 const SizedBox(width: 10),
-                Expanded(child: _BentoTile(department: live[2], height: 108, onTap: onOpenCategories)),
+                Expanded(
+                  child: _BentoTile(
+                    department: live[2],
+                    height: 108,
+                    onTap: _openDepartment(context, live[2]),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -131,39 +218,17 @@ class HomeTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            SizedBox(
-              height: 108,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: const <Widget>[
-                  _MerchantCard(
-                    name: 'Nyeri Fresh Mart',
-                    department: 'Shopping',
-                    detail: 'Kimathi Way · 20 min',
-                    rating: '4.7',
-                    accent: AppColors.sky,
-                    icon: Icons.storefront_rounded,
+            NearYouRow(
+              onOpenMerchant: (MerchantSummary merchant, SupremeDepartment department) {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext _) => StorefrontScreen(
+                      department: department,
+                      merchant: merchant,
+                    ),
                   ),
-                  SizedBox(width: 10),
-                  _MerchantCard(
-                    name: 'Mama Ngina Cafe',
-                    department: 'Food',
-                    detail: 'Town centre · 25 min',
-                    rating: '4.8',
-                    accent: AppColors.gold,
-                    icon: Icons.restaurant_rounded,
-                  ),
-                  SizedBox(width: 10),
-                  _MerchantCard(
-                    name: 'Karatina Greens',
-                    department: 'Fresh',
-                    detail: 'Market day · 40 min',
-                    rating: '4.6',
-                    accent: AppColors.emerald,
-                    icon: Icons.eco_rounded,
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),
@@ -173,7 +238,10 @@ class HomeTab extends StatelessWidget {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar();
+  const _TopBar({this.area, this.onPickArea});
+
+  final String? area;
+  final VoidCallback? onPickArea;
 
   @override
   Widget build(BuildContext context) {
@@ -182,25 +250,43 @@ class _TopBar extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(11, 9, 9, 9),
-              decoration: _glassDecoration(radius: 100),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Icon(Icons.place_outlined, size: 14, color: AppColors.sky),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Nyeri Town',
-                    style: AppText.caption.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.inkOnDark,
-                    ),
+            child: GestureDetector(
+              onTap: onPickArea,
+              behavior: HitTestBehavior.opaque,
+              // 48 dp touch target; the visible pill stays compact.
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 48),
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(11, 9, 9, 9),
+                  decoration: _glassDecoration(radius: 100),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Icon(Icons.place_outlined, size: 14, color: AppColors.sky),
+                      const SizedBox(width: 6),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 130),
+                        child: Text(
+                          area ?? 'Choose area',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.caption.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.inkOnDark,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      const Icon(
+                        Icons.expand_more,
+                        size: 14,
+                        color: AppColors.inkMutedOnDark,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 2),
-                  const Icon(Icons.expand_more, size: 14, color: AppColors.inkMutedOnDark),
-                ],
+                ),
               ),
             ),
           ),
@@ -474,85 +560,169 @@ class _ActiveOrderCard extends StatelessWidget {
   }
 }
 
-class _MerchantCard extends StatelessWidget {
-  const _MerchantCard({
-    required this.name,
-    required this.department,
-    required this.detail,
-    required this.rating,
-    required this.accent,
-    required this.icon,
-  });
+/// "Near you" strip: approved merchants from the database.
+///
+/// Loads once, keeps its own loading/empty/error state, and shows nothing at
+/// all rather than a fake name if the catalogue is unreachable.
+class NearYouRow extends StatefulWidget {
+  const NearYouRow({super.key, required this.onOpenMerchant});
 
-  final String name;
-  final String department;
-  final String detail;
-  final String rating;
-  final Color accent;
-  final IconData icon;
+  final void Function(MerchantSummary merchant, SupremeDepartment department) onOpenMerchant;
+
+  @override
+  State<NearYouRow> createState() => _NearYouRowState();
+}
+
+class _NearYouRowState extends State<NearYouRow> {
+  static const CatalogueRepository _repository = CatalogueRepository();
+  late Future<List<MerchantSummary>> _future = _repository.merchants(limit: 8);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 156,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.hairlineDark),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceRaised,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, size: 14, color: accent),
+    // Height allows for a 130 % text setting, which the cards clamp to: a
+    // taller strip beats a RenderFlex overflow on the home screen.
+    return SizedBox(
+      height: 124,
+      child: FutureBuilder<List<MerchantSummary>>(
+        future: _future,
+        builder: (BuildContext context, AsyncSnapshot<List<MerchantSummary>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                for (int i = 0; i < 3; i++)
+                  Container(
+                    width: 156,
+                    margin: const EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+              ],
+            );
+          }
+
+          final List<MerchantSummary> merchants = snapshot.data ?? const <MerchantSummary>[];
+          if (snapshot.hasError || merchants.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.hairlineDark),
               ),
-              const Spacer(),
-              const Icon(Icons.star_rounded, size: 12, color: AppColors.gold),
-              const SizedBox(width: 2),
-              Text(
-                rating,
-                style: AppText.caption.copyWith(fontSize: 9.5, color: AppColors.inkOnDark),
+              child: Text(
+                snapshot.hasError
+                    ? 'Merchants could not load. Pull to refresh later.'
+                    : 'No approved merchants near you yet.',
+                style: AppText.caption.copyWith(fontSize: 10.5, color: AppColors.inkMutedOnDark),
               ),
-            ],
-          ),
-          const SizedBox(height: 9),
-          Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppText.cardTitle.copyWith(fontSize: 11.5, color: AppColors.inkOnDark),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            department,
-            style: AppText.caption.copyWith(fontSize: 9, color: accent),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            detail,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppText.caption.copyWith(fontSize: 8.8, color: AppColors.inkMutedOnDark),
-          ),
-        ],
+            );
+          }
+
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: merchants.length,
+            separatorBuilder: (BuildContext _, int __) => const SizedBox(width: 10),
+            itemBuilder: (BuildContext context, int index) {
+              final MerchantSummary merchant = merchants[index];
+              final SupremeDepartment department = supremeDepartments.firstWhere(
+                (SupremeDepartment d) => merchant.sellsIn(d.id),
+                orElse: () => supremeDepartments.first,
+              );
+              return _MerchantCard(
+                merchant: merchant,
+                department: department,
+                onTap: () => widget.onOpenMerchant(merchant, department),
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
 
-BoxDecoration _glassDecoration({required double radius}) {
-  return BoxDecoration(
-    color: AppColors.surface,
-    borderRadius: BorderRadius.circular(radius),
-    border: Border.all(color: AppColors.hairlineDark),
-  );
+class _MerchantCard extends StatelessWidget {
+  const _MerchantCard({
+    required this.merchant,
+    required this.department,
+    required this.onTap,
+  });
+
+  final MerchantSummary merchant;
+  final SupremeDepartment department;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      // The strip has a fixed height, so the labels are clamped to the size
+      // that height was measured against.
+      child: MediaQuery.withClampedTextScaling(
+        maxScaleFactor: 1.3,
+        child: Container(
+          width: 156,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.hairlineDark),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceRaised,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(department.icon, size: 14, color: department.accent),
+                  ),
+                  const Spacer(),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    size: 13,
+                    color: AppColors.inkMutedOnDark,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 9),
+              Text(
+                merchant.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.cardTitle.copyWith(fontSize: 11.5, color: AppColors.inkOnDark),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                department.shortName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.caption.copyWith(fontSize: 9, color: department.accent),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                merchant.area,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.caption.copyWith(
+                  fontSize: 9.5,
+                  color: AppColors.inkMutedOnDark,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

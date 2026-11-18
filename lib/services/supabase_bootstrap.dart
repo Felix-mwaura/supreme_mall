@@ -15,6 +15,9 @@ class SupabaseBootstrap {
 
   static bool get isInitialized => _initialized;
 
+  /// The shared client. Only valid once [initialize] has run.
+  static SupabaseClient get client => Supabase.instance.client;
+
   static Future<void> initialize() async {
     if (_initialized) {
       return;

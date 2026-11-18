@@ -40,13 +40,31 @@ class AuthService {
     try {
       final Map<String, dynamic>? row = await _client
           .from('profiles')
-          .select('id, full_name, phone, role')
+          .select('id, full_name, phone, role, delivery_area')
           .eq('id', current.id)
           .maybeSingle();
       if (row == null) {
         return null;
       }
       return AppProfile.fromMap(row);
+    } on PostgrestException catch (error) {
+      throw AuthFailure(AuthErrorMapper.describe(pgCode: error.code, message: error.message));
+    } catch (error) {
+      throw AuthFailure(AuthErrorMapper.describe(message: error.toString()));
+    }
+  }
+
+  /// Saves the customer's chosen area on their profile.
+  Future<void> updateDeliveryArea(String area) async {
+    final User? current = _auth.currentUser;
+    if (current == null) {
+      throw const AuthFailure('Sign in again to change your area.');
+    }
+    try {
+      await _client
+          .from('profiles')
+          .update(<String, dynamic>{'delivery_area': area.trim()})
+          .eq('id', current.id);
     } on PostgrestException catch (error) {
       throw AuthFailure(AuthErrorMapper.describe(pgCode: error.code, message: error.message));
     } catch (error) {

@@ -28,6 +28,8 @@ void main() {
     expect(currentTab(tester), NavTab.home);
     expect(find.text('Search shops, food, produce'), findsOneWidget);
     expect(find.text('Order #SM-1042 · On the way'), findsOneWidget);
+    // The area chip invites a choice until the profile supplies one.
+    expect(find.text('Choose area'), findsOneWidget);
 
     // Later-phase departments are present but badged.
     expect(find.text('SOON'), findsWidgets);
@@ -39,7 +41,9 @@ void main() {
     await tapTab(tester, 'Categories');
     expect(currentTab(tester), NavTab.categories);
     expect(find.text('Browse'), findsOneWidget);
-    expect(find.text('Chieni Supermarket'), findsWidgets);
+    // No Supabase in tests, so the directory honestly reports that it has no
+    // merchants rather than falling back to sample names.
+    expect(find.text('No merchants listed yet'), findsOneWidget);
 
     await tapTab(tester, 'Orders');
     expect(currentTab(tester), NavTab.orders);

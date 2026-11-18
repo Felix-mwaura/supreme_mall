@@ -31,6 +31,19 @@ platform launching in Nyeri, Kenya.
 | Config error | `lib/screens/config_missing_screen.dart` | Explains a build made without Supabase credentials, instead of failing later |
 | Application result | `lib/screens/auth/signup_result_screen.dart` | Post-submission confirmation for both account types |
 
+**Milestone 3 — customer storefronts (Shopping first, Food and Fresh reuse it).**
+
+| Screen | File | Notes |
+| --- | --- | --- |
+| Storefront | `lib/screens/catalogue/storefront_screen.dart` | One widget per department: branded header, area, rounded search (320 ms debounce), category chips, responsive grid, pull to refresh, loading / empty / error states |
+| Product detail | `lib/screens/catalogue/product_detail_screen.dart` | Photo, merchant, price with real previous price, unit, availability, description. No cart action — that is Milestone 4 |
+| Merchant directory | `lib/screens/home/tabs/categories_tab.dart` | Rewritten: real approved merchants grouped by department, search, department chips, "coming later" departments kept visibly separate |
+| Home "Near you" | `lib/screens/home/tabs/home_tab.dart` | Live merchants split by department; tiles open their storefront; area chip edits the saved area |
+
+Catalogue reads live in `lib/repositories/catalogue_repository.dart`; nothing in the
+catalogue UI touches `demo_data.dart` any more (only sample orders do, until Milestone 4).
+Full detail: [`docs/milestone-3-report.md`](docs/milestone-3-report.md).
+
 Data access lives in `lib/services/auth_service.dart` (auth + profile + own business),
 with typed errors surface-mapped by `lib/utils/auth_errors.dart`.
 
@@ -40,17 +53,23 @@ Phase 1 Roadmap (sections 2.1, 2.2 and 7 for the commission/department structure
 ### Database (Supabase)
 
 Project **supreme_mall**, ref `gfqpjdtbhsipquvdfkfn`, eu-central-1, Postgres 17.
-The deployed schema is reproduced for review in
-[`supabase/migrations/0001_foundation.sql`](supabase/migrations/0001_foundation.sql).
+The deployed schema is reproduced for review in `supabase/migrations/`
+(`0001_foundation`, `0002_catalogue`, `0003_guard_service_context`).
 
 - Tables: `departments` (7 seeded, ids mirroring `lib/models/department.dart`),
-  `profiles`, `businesses`, `business_departments` (many-to-many), `business_documents`.
+  `profiles`, `businesses`, `business_departments` (many-to-many), `business_documents`,
+  `product_categories` (11 seeded across Shopping/Food/Fresh) and `products`.
 - A new `auth.users` row creates its `profiles` row automatically; `account_type`
   metadata can only produce `customer` or `business_owner`.
 - RLS is on for every table. Owners see only their own profile/business/documents;
   `guard_*` triggers stop a user changing their own `role` or a business's review
   fields — those are administrator-only (`is_admin()`).
+- Customers can read approved businesses and their **active** products only; pending
+  merchants and inactive listings never leave the database. A merchant has full control
+  of their own products but cannot move one to another business.
 - Passwords never touch our tables: Supabase Auth owns credentials.
+- Local demo catalogue: [`supabase/seeds/demo_catalogue.sql`](supabase/seeds/demo_catalogue.sql)
+  (three stores, 17 products, two out of stock and one inactive, so every state is visible).
 
 ### Design system
 - Palette in `lib/theme/app_colors.dart`: Supreme Navy `#0B2D5B`, Ivory White `#F8FAFC`,
@@ -70,16 +89,20 @@ lib/
   models/
     department.dart             the seven service departments + Phase 1 flags
     account_role.dart           customer vs business
-    app_profile.dart            profiles row
+    app_profile.dart            profiles row (+ delivery_area)
+    catalogue.dart              product, category and merchant summary
     business_application.dart   businesses row + status enum
   data/
-    demo_data.dart              sample merchants/orders for the catalogue (Milestone 3)
+    demo_data.dart              sample orders only (catalogue is live)
+  repositories/
+    catalogue_repository.dart   the only catalogue queries (department/merchant/search)
   services/
-    supabase_bootstrap.dart     initialises Supabase once, exposes AuthService
+    supabase_bootstrap.dart     initialises Supabase once, exposes client + AuthService
     auth_service.dart           sign up / sign in / sign out / reset / load profile
   screens/
     welcome_screen.dart         entry screen (account paths)
     home/                       customer dashboard (Bento)
+    catalogue/                  storefront + product detail (shared by all departments)
     business/                   business status while awaiting approval
     auth/                       sign-up, sign-in, result, auth gate
   theme/                        colours, text styles, theme
@@ -89,6 +112,7 @@ lib/
     money.dart                  KSh formatting
   widgets/                      buttons, logo, nav, cards, form fields, banners
 supabase/migrations/            deployed schema, for review
+supabase/seeds/                 local demo catalogue
 test/                           widget + unit tests
 ```
 
@@ -148,18 +172,22 @@ cd design_preview && python3 -m http.server 3000
   letter and a number. The stricter client rule is what real users meet.
 - Business documents are collected as metadata columns; the upload + review workflow
   arrives with the admin milestone.
-- Customers cannot read `businesses` at all yet — no public read policy exists until
-  the catalogue milestone needs it.
-- Categories and Orders still render sample data from `lib/data/demo_data.dart`.
+- Merchants cannot upload product photos yet (needs the merchant dashboard and a
+  Storage bucket), so listings show a department-tinted placeholder. `image_url` is
+  already read, with fade-in and a broken-image fallback.
+- Orders still render sample data from `lib/data/demo_data.dart`.
+- No ratings or reviews: there is no data model for them, so none are displayed.
+- The storefront loads a single page of 40 listings; the repository is paginated
+  (`limit`/`offset`) and "load more" arrives with real volume.
 - **No cart tab.** It needs the orders database, so the shell ships with four tabs
   (Home, Categories, Orders, Profile) and the cart returns as the centre tab with
   the cart/checkout milestone.
 
 ## Suggested next steps
 
-1. Milestone 3 — catalogue: `departments`-scoped storefronts, products, images, RLS
-   for approved businesses only, replacing `demo_data.dart`.
-2. Customer address book + delivery zones per town.
-3. Cart tab and single checkout with one sub-order per business.
-4. Merchant dashboard for Phase 1 departments.
+1. Milestone 4 — cart, checkout and orders: real cart state, server-validated totals,
+   one sub-order per business, order history replacing the sample rows.
+2. Merchant dashboard: product CRUD and photo uploads.
+3. Customer address book + delivery zones per town.
+4. Favourites, once the MVP scope is agreed and a table exists.
 5. Pre-pilot: custom SMTP + OTP email confirmation, then pilot launch.
