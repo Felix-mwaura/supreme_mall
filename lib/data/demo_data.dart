@@ -1,32 +1,8 @@
-/// Local sample data for the navigation milestone.
+/// Sample **orders** used by the Orders tab until the orders table exists.
 ///
-/// Everything here is replaced by Supabase queries when the catalogue and
-/// orders tables land. Keeping it in one file means the screens never hard-code
-/// merchant or order details inline.
-class DemoMerchant {
-  const DemoMerchant({
-    required this.name,
-    required this.departmentId,
-    required this.area,
-    required this.rating,
-    required this.deliveryMinutes,
-    required this.isOpen,
-    this.priceNote,
-  });
-
-  final String name;
-
-  /// Matches an id in `supremeDepartments`.
-  final String departmentId;
-  final String area;
-  final double rating;
-  final int deliveryMinutes;
-  final bool isOpen;
-
-  /// e.g. "From KSh 60/kg"
-  final String? priceNote;
-}
-
+/// Merchants and products no longer live here — they come from Supabase through
+/// `CatalogueRepository`. This file goes away with the cart and checkout
+/// milestone, which replaces these rows with real order records.
 class DemoOrderLine {
   const DemoOrderLine(this.name, this.quantity);
 
@@ -57,63 +33,6 @@ class DemoOrder {
   final List<DemoOrderLine> lines;
   final bool isActive;
 }
-
-const List<DemoMerchant> demoMerchants = <DemoMerchant>[
-  DemoMerchant(
-    name: 'Nyeri Fresh Mart',
-    departmentId: 'shopping',
-    area: 'Kimathi Way',
-    rating: 4.7,
-    deliveryMinutes: 20,
-    isOpen: true,
-    priceNote: 'Groceries · household',
-  ),
-  DemoMerchant(
-    name: 'Chieni Supermarket',
-    departmentId: 'shopping',
-    area: 'Town centre',
-    rating: 4.5,
-    deliveryMinutes: 30,
-    isOpen: true,
-    priceNote: 'Groceries · electronics',
-  ),
-  DemoMerchant(
-    name: 'Mama Ngina Cafe',
-    departmentId: 'food',
-    area: 'Town centre',
-    rating: 4.8,
-    deliveryMinutes: 25,
-    isOpen: true,
-    priceNote: 'Kenyan · breakfast',
-  ),
-  DemoMerchant(
-    name: 'Hotel Nokras Grill',
-    departmentId: 'food',
-    area: 'Ruring\u2019u',
-    rating: 4.6,
-    deliveryMinutes: 35,
-    isOpen: true,
-    priceNote: 'Grill · full menu',
-  ),
-  DemoMerchant(
-    name: 'Karatina Greens',
-    departmentId: 'fresh',
-    area: 'Market day',
-    rating: 4.6,
-    deliveryMinutes: 40,
-    isOpen: true,
-    priceNote: 'From KSh 40/kg',
-  ),
-  DemoMerchant(
-    name: 'Kamakwa Farm Produce',
-    departmentId: 'fresh',
-    area: 'Kamakwa',
-    rating: 4.4,
-    deliveryMinutes: 45,
-    isOpen: false,
-    priceNote: 'From KSh 55/kg',
-  ),
-];
 
 const List<DemoOrder> demoOrders = <DemoOrder>[
   DemoOrder(
@@ -155,12 +74,6 @@ const List<DemoOrder> demoOrders = <DemoOrder>[
     ],
   ),
 ];
-
-List<DemoMerchant> merchantsFor(String departmentId) {
-  return demoMerchants
-      .where((DemoMerchant m) => m.departmentId == departmentId)
-      .toList();
-}
 
 const List<String> orderStatusLabels = <String>[
   'Received',

@@ -5,13 +5,16 @@ class AppProfile {
     required this.fullName,
     required this.role,
     this.phone,
+    this.deliveryArea,
   });
 
   factory AppProfile.fromMap(Map<String, dynamic> map) {
+    final String area = (map['delivery_area'] as String? ?? '').trim();
     return AppProfile(
       id: map['id'] as String,
       fullName: (map['full_name'] as String?) ?? '',
       phone: map['phone'] as String?,
+      deliveryArea: area.isEmpty ? null : area,
       role: map['role'] as String? ?? 'customer',
     );
   }
@@ -22,6 +25,10 @@ class AppProfile {
 
   /// `customer` | `business_owner` | `admin` — enforced in the database.
   final String role;
+
+  /// Area the customer shops for ("Nyeri Town"). Persisted on the profile so it
+  /// survives reinstalls; null until they pick one.
+  final String? deliveryArea;
 
   bool get isBusiness => role == 'business_owner';
   bool get isAdmin => role == 'admin';

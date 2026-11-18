@@ -76,32 +76,38 @@ class DarkChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.goldSoft : AppColors.surface,
-          borderRadius: BorderRadius.circular(100),
-          border: Border.all(
-            color: selected ? const Color(0x59D4A017) : AppColors.hairlineDark,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (icon != null) ...<Widget>[
-              Icon(icon, size: 13, color: ink),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-                color: ink,
-              ),
+      // The pill stays compact; the padded box around it gives a 48 dp touch
+      // target, which the pill alone would not reach.
+      child: Container(
+        alignment: Alignment.center,
+        constraints: const BoxConstraints(minHeight: 48),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? AppColors.goldSoft : AppColors.surface,
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(
+              color: selected ? const Color(0x59D4A017) : AppColors.hairlineDark,
             ),
-          ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (icon != null) ...<Widget>[
+                Icon(icon, size: 13, color: ink),
+                const SizedBox(width: 6),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                  color: ink,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
